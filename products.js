@@ -18,7 +18,7 @@ const PRODUCTS = [
         sizes: ['P', 'M', 'G', 'GG', 'XG'],
         sizesOutOfStock: [],
         images: [
-            'img/products-cape.jpeg',
+            'img/products-cape2.jpeg',
             'img/options-black2.jpeg',
             'img/options-black3.jpeg',
             'img/options-black4.jpeg' 
