@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coleção | DREVIK</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@300;400;500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body data-page="shop">
+
+    <div class="noise-overlay"></div>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+    <div class="page-transition" id="page-transition"></div>
+
+    <div class="announcement-bar">
+        <div class="announcement-track">
+            <span>FRETE GRÁTIS ACIMA DE R$ 299</span><span>✦</span>
+            <span>PHASE ONE — DISPONÍVEL AGORA</span><span>✦</span>
+            <span>PARCELE EM ATÉ 6X SEM JUROS</span><span>✦</span>
+            <span>FRETE GRÁTIS ACIMA DE R$ 299</span><span>✦</span>
+            <span>PHASE ONE — DISPONÍVEL AGORA</span><span>✦</span>
+            <span>PARCELE EM ATÉ 6X SEM JUROS</span><span>✦</span>
+        </div>
+    </div>
+
+    <header id="header" class="header-solid">
+        <div class="nav-container">
+            <a href="index.html" class="logo">DK</a>
+            <nav class="nav-links">
+                <a href="shop.html">Coleção</a>
+                <a href="index.html#manifesto">Manifesto</a>
+                <a href="index.html#contact">Contato</a>
+            </nav>
+            <div class="nav-actions">
+                <button class="icon-btn" id="search-toggle" aria-label="Buscar">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+                <button class="icon-btn" id="wishlist-toggle" aria-label="Favoritos">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                    <span class="badge-count" id="wishlist-count">0</span>
+                </button>
+                <button class="icon-btn" id="cart-toggle" aria-label="Carrinho">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <path d="M3 6h18"></path>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    <span class="badge-count" id="cart-count">0</span>
+                </button>
+                <button class="menu-toggle" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="shop-page">
+        <nav class="breadcrumbs">
+            <a href="index.html">Início</a>
+            <span>/</span>
+            <span>Coleção</span>
+        </nav>
+
+        <div class="shop-intro">
+            <h1 class="shop-title">COLEÇÃO PHASE ONE</h1>
+            <p class="shop-subtitle">Todas as peças da coleção. Encontre a sua.</p>
+        </div>
+
+        <div class="shop-controls">
+            <div class="filter-group">
+                <span class="filter-label">Filtrar:</span>
+                <button class="filter-btn active" data-filter="all">Todos</button>
+                <button class="filter-btn" data-filter="oversized">Oversized</button>
+                <button class="filter-btn" data-filter="regular">Regular</button>
+                <button class="filter-btn" data-filter="new">Novidades</button>
+            </div>
+            <div class="sort-group">
+                <span class="filter-label">Ordenar:</span>
+                <select class="sort-select" id="sort-select">
+                    <option value="relevance">Relevância</option>
+                    <option value="price-asc">Menor Preço</option>
+                    <option value="price-desc">Maior Preço</option>
+                    <option value="name">Nome (A-Z)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="shop-grid" id="shop-grid">
+            <!-- Skeleton loading -->
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+        </div>
+    </main>
+
+    <!-- FOOTER MINIMAL -->
+    <footer class="footer-minimal">
+        <p>&copy; 2026 DREVIK. Todos os direitos reservados.</p>
+    </footer>
+
+    <button class="back-to-top" id="back-to-top" aria-label="Voltar ao topo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="m18 15-6-6-6 6"></path>
+        </svg>
+    </button>
+
+    <!-- SEARCH OVERLAY -->
+    <div class="search-overlay" id="search-overlay">
+        <div class="search-content">
+            <button class="search-close" id="search-close">&times;</button>
+            <input type="text" class="search-input" id="search-input" placeholder="Buscar produtos..." autocomplete="off">
+            <div class="search-results" id="search-results"></div>
+        </div>
+    </div>
+
+    <!-- CART DRAWER -->
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <aside class="cart-drawer" id="cart-drawer">
+        <div class="cart-header">
+            <h3>Seu Carrinho</h3>
+            <button class="cart-close" id="cart-close">&times;</button>
+        </div>
+        <div class="cart-items" id="cart-items"></div>
+        <div class="cart-footer" id="cart-footer">
+            <div class="cart-subtotal">
+                <span>Subtotal</span>
+                <span id="cart-subtotal">R$ 0,00</span>
+            </div>
+            <p class="cart-shipping-note">Frete calculado no checkout</p>
+            <button class="btn-checkout">Finalizar Compra</button>
+            <button class="btn-continue" id="cart-continue">Continuar Comprando</button>
+        </div>
+    </aside>
+
+    <!-- TOAST -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="products.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
