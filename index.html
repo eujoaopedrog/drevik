@@ -4,11 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="DREVIK - Streetwear de luxo. Não é apenas roupa, é a sua armadura.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="DREVIK | Streetwear de Luxo">
+    <meta property="og:description" content="DREVIK - Streetwear de luxo. Não é apenas roupa, é a sua armadura.">
+    <meta property="og:image" content="./img/image-section-principal.jpeg">
     <title>DREVIK | Streetwear de Luxo</title>
-    <link rel="stylesheet" href="style.css?v=6">
+    <link rel="preload" as="image" href="./img/image-section-principal-800w.jpg" imagesrcset="./img/image-section-principal-160w.jpg 160w, ./img/image-section-principal-320w.jpg 320w, ./img/image-section-principal-480w.jpg 480w, ./img/image-section-principal-800w.jpg 800w, ./img/image-section-principal.jpeg 1080w" imagesizes="100vw" fetchpriority="high">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@300;400;500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Anton&family=Cinzel:wght@700&family=Inter:wght@300;400;500&display=swap" data-font-stylesheet>
+    <link rel="stylesheet" href="./src/css/main.css">
 </head>
 <body data-page="home">
 
@@ -59,7 +64,7 @@
                 <a href="#contact">Contato</a>
             </nav>
             <div class="nav-actions">
-                <button class="icon-btn" id="search-toggle" aria-label="Buscar">
+                <button class="icon-btn" id="search-toggle" aria-label="Buscar" aria-controls="search-overlay" aria-expanded="false">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <circle cx="11" cy="11" r="8"></circle>
                         <path d="m21 21-4.35-4.35"></path>
@@ -71,7 +76,7 @@
                     </svg>
                     <span class="badge-count" id="wishlist-count">0</span>
                 </button>
-                <button class="icon-btn" id="cart-toggle" aria-label="Carrinho">
+                <button class="icon-btn" id="cart-toggle" aria-label="Abrir sacola" aria-controls="cart-drawer" aria-expanded="false">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
                         <path d="M3 6h18"></path>
@@ -79,7 +84,7 @@
                     </svg>
                     <span class="badge-count" id="cart-count">0</span>
                 </button>
-                <button class="menu-toggle" aria-label="Menu">
+                <button class="menu-toggle" aria-label="Menu" aria-expanded="false">
                     <span></span><span></span><span></span>
                 </button>
             </div>
@@ -89,7 +94,7 @@
     <!-- HERO -->
     <section class="hero">
         <div class="hero-bg">
-            <img src="https://images.unsplash.com/photo-1523398002811-999ca8dec234?q=80&w=2000&auto=format&fit=crop" alt="DREVIK Hero">
+            <img src="./img/image-section-principal.jpeg" srcset="./img/image-section-principal-160w.jpg 160w, ./img/image-section-principal-320w.jpg 320w, ./img/image-section-principal-480w.jpg 480w, ./img/image-section-principal-800w.jpg 800w, ./img/image-section-principal.jpeg 1080w" sizes="100vw" width="1080" height="1440" alt="Modelo usando camiseta DREVIK preta" loading="eager" fetchpriority="high">
             <div class="hero-overlay"></div>
         </div>
         <div class="hero-content">
@@ -138,7 +143,7 @@
             <!-- Produto 1 -->
             <a href="product.html?id=the-process-tee" class="lookbook-item lookbook-large">
                 <div class="lookbook-image">
-                    <img src="cole%C3%A7ao/The%20Process/The%20Process%20-%20Frente%20(Modelo).png" alt="The Process Tee - frente no modelo" loading="lazy">
+                    <img src="./colecao/the-process/the-process-frente-modelo.png" srcset="./colecao/the-process/the-process-frente-modelo-160w.jpg 160w, ./colecao/the-process/the-process-frente-modelo-320w.jpg 320w, ./colecao/the-process/the-process-frente-modelo-480w.jpg 480w, ./colecao/the-process/the-process-frente-modelo-800w.jpg 800w, ./colecao/the-process/the-process-frente-modelo.png 1080w" sizes="(max-width: 768px) 78vw, 58vw" width="1080" height="1718" alt="The Process Tee - frente no modelo" loading="lazy">
                     <span class="lookbook-badge">NOVO</span>
                     <div class="lookbook-overlay">
                         <span class="lookbook-cta">Ver produto</span>
@@ -156,7 +161,7 @@
             <!-- Produto 2 -->
             <a href="product.html?id=every-scar-tee" class="lookbook-item lookbook-medium">
                 <div class="lookbook-image">
-                    <img src="cole%C3%A7ao/Every%20Scar/Every%20Scar%20-%20Frente%20(Modelo).jpg" alt="Every Scar Tee - frente no modelo" loading="lazy">
+                    <img src="./colecao/every-scar/every-scar-frente-modelo.jpg" srcset="./colecao/every-scar/every-scar-frente-modelo-160w.jpg 160w, ./colecao/every-scar/every-scar-frente-modelo-320w.jpg 320w, ./colecao/every-scar/every-scar-frente-modelo-480w.jpg 480w, ./colecao/every-scar/every-scar-frente-modelo-800w.jpg 800w, ./colecao/every-scar/every-scar-frente-modelo.jpg 1080w" sizes="(max-width: 768px) 78vw, 35vw" width="1080" height="1440" alt="Every Scar Tee - frente no modelo" loading="lazy">
                     <span class="lookbook-badge">NOVO</span>
                     <div class="lookbook-overlay">
                         <span class="lookbook-cta">Ver produto</span>
@@ -174,7 +179,7 @@
             <!-- Produto 3 -->
             <a href="product.html?id=stay-hard-tee" class="lookbook-item lookbook-full">
                 <div class="lookbook-image">
-                    <img src="cole%C3%A7ao/Stay%20Hard/Stay%20Hard%20-%20Frente%20(Modelo).jpg" alt="Stay Hard Tee - frente no modelo" loading="lazy">
+                    <img src="./colecao/stay-hard/stay-hard-frente-modelo.jpg" srcset="./colecao/stay-hard/stay-hard-frente-modelo-160w.jpg 160w, ./colecao/stay-hard/stay-hard-frente-modelo-320w.jpg 320w, ./colecao/stay-hard/stay-hard-frente-modelo-480w.jpg 480w, ./colecao/stay-hard/stay-hard-frente-modelo-800w.jpg 800w, ./colecao/stay-hard/stay-hard-frente-modelo.jpg 1080w" sizes="(max-width: 768px) 78vw, 58vw" width="1080" height="1350" alt="Stay Hard Tee - frente no modelo" loading="lazy">
                     <div class="lookbook-overlay">
                         <span class="lookbook-cta">Ver produto</span>
                     </div>
@@ -189,7 +194,7 @@
             </a>
             <a href="product.html?id=phase-one-tee" class="lookbook-item lookbook-large">
                 <div class="lookbook-image">
-                    <img src="cole%C3%A7ao/Phase%20One/Phase%20One%20-%20Frente%20(Modelo).jpg" alt="Phase One Tee - frente no modelo" loading="lazy">
+                    <img src="./colecao/phase-one/phase-one-frente-modelo.jpg" srcset="./colecao/phase-one/phase-one-frente-modelo-160w.jpg 160w, ./colecao/phase-one/phase-one-frente-modelo-320w.jpg 320w, ./colecao/phase-one/phase-one-frente-modelo-480w.jpg 480w, ./colecao/phase-one/phase-one-frente-modelo-800w.jpg 800w, ./colecao/phase-one/phase-one-frente-modelo.jpg 1080w" sizes="(max-width: 768px) 78vw, 58vw" width="1080" height="1620" alt="Phase One Tee - frente no modelo" loading="lazy">
                     <span class="lookbook-badge">NOVO</span>
                     <div class="lookbook-overlay">
                         <span class="lookbook-cta">Ver produto</span>
@@ -270,20 +275,20 @@
     </button>
 
     <!-- SEARCH OVERLAY -->
-    <div class="search-overlay" id="search-overlay">
+    <div class="search-overlay" id="search-overlay" role="dialog" aria-modal="true" aria-label="Buscar produtos" tabindex="-1">
         <div class="search-content">
-            <button class="search-close" id="search-close">&times;</button>
-            <input type="text" class="search-input" id="search-input" placeholder="Buscar produtos..." autocomplete="off">
+            <button type="button" class="search-close" id="search-close" aria-label="Fechar busca">&times;</button>
+            <input type="text" class="search-input" id="search-input" placeholder="Buscar produtos..." aria-label="Buscar produtos" autocomplete="off">
             <div class="search-results" id="search-results"></div>
         </div>
     </div>
 
     <!-- CART DRAWER -->
-    <div class="cart-overlay" id="cart-overlay"></div>
-    <aside class="cart-drawer" id="cart-drawer">
+    <div class="cart-overlay" id="cart-overlay" aria-hidden="true"></div>
+    <aside class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" aria-hidden="true" inert tabindex="-1">
         <div class="cart-header">
-            <h3>Seu Carrinho</h3>
-            <button class="cart-close" id="cart-close">&times;</button>
+            <h3 id="cart-title">Sua Sacola</h3>
+            <button type="button" class="cart-close" id="cart-close" aria-label="Fechar sacola">&times;</button>
         </div>
         <div class="cart-items" id="cart-items"></div>
         <div class="cart-footer" id="cart-footer">
@@ -291,16 +296,15 @@
                 <span>Subtotal</span>
                 <span id="cart-subtotal">R$ 0,00</span>
             </div>
-            <p class="cart-shipping-note">Frete calculado no checkout</p>
-            <button class="btn-checkout">Finalizar Compra</button>
-            <button class="btn-continue" id="cart-continue">Continuar Comprando</button>
+            <p class="cart-shipping-note">Frete combinado diretamente pelo WhatsApp.</p>
+            <button type="button" class="btn-whatsapp-order">Finalizar no WhatsApp</button>
+            <button type="button" class="btn-continue" id="cart-continue">Continuar comprando</button>
         </div>
     </aside>
 
     <!-- TOAST -->
-    <div class="toast-container" id="toast-container"></div>
+    <div class="toast-container" id="toast-container" role="status" aria-live="polite" aria-atomic="true"></div>
 
-    <script src="products.js"></script>
-    <script src="script.js"></script>
+    <script type="module" src="./src/js/main.js"></script>
 </body>
 </html>
