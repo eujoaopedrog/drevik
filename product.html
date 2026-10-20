@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -143,4 +144,151 @@
 
     <script type="module" src="./src/js/main.js"></script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Conheça os detalhes e tamanhos disponíveis da camiseta DREVIK.">
+    <meta property="og:type" content="product">
+    <meta property="og:title" content="Produto | DREVIK">
+    <meta property="og:description" content="Conheça os detalhes e tamanhos disponíveis da camiseta DREVIK.">
+    <meta property="og:image" content="./img/image-section-principal.jpeg">
+    <title>Produto | DREVIK</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Anton&family=Cinzel:wght@700&family=Inter:wght@300;400;500&display=swap" data-font-stylesheet>
+    <link rel="stylesheet" href="./src/css/main.css">
+</head>
+<body data-page="product">
+
+    <div class="noise-overlay"></div>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+    <div class="page-transition" id="page-transition"></div>
+
+    <div class="announcement-bar">
+        <div class="announcement-track">
+            <span>FRETE GRÁTIS ACIMA DE R$ 299</span><span>✦</span>
+            <span>PHASE ONE — DISPONÍVEL AGORA</span><span>✦</span>
+            <span>PARCELE EM ATÉ 6X SEM JUROS</span><span>✦</span>
+            <span>FRETE GRÁTIS ACIMA DE R$ 299</span><span>✦</span>
+            <span>PHASE ONE — DISPONÍVEL AGORA</span><span>✦</span>
+            <span>PARCELE EM ATÉ 6X SEM JUROS</span><span>✦</span>
+        </div>
+    </div>
+
+    <header id="header" class="header-solid">
+        <div class="nav-container">
+            <a href="index.html" class="logo">DK</a>
+            <nav class="nav-links">
+                <a href="shop.html">Coleção</a>
+                <a href="index.html#manifesto">Manifesto</a>
+                <a href="index.html#contact">Contato</a>
+            </nav>
+            <div class="nav-actions">
+                <button class="icon-btn" id="search-toggle" aria-label="Buscar" aria-controls="search-overlay" aria-expanded="false">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+                <button class="icon-btn" id="wishlist-toggle" aria-label="Favoritos">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                    <span class="badge-count" id="wishlist-count">0</span>
+                </button>
+                <button class="icon-btn" id="cart-toggle" aria-label="Abrir sacola" aria-controls="cart-drawer" aria-expanded="false">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <path d="M3 6h18"></path>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    <span class="badge-count" id="cart-count">0</span>
+                </button>
+                <button class="menu-toggle" aria-label="Menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="product-page">
+        <nav class="breadcrumbs" id="breadcrumbs">
+            <a href="index.html">Início</a>
+            <span>/</span>
+            <a href="shop.html">Coleção</a>
+            <span>/</span>
+            <span id="breadcrumb-product">Produto</span>
+        </nav>
+
+        <section class="product-layout" id="product-layout" aria-label="Detalhes do produto">
+            <div class="loading-state">Carregando produto...</div>
+        </section>
+
+        <!-- PRODUTOS RELACIONADOS -->
+        <section class="related-section" id="related-section" style="display:none;">
+            <div class="related-header">
+                <span class="section-tag">Você também vai gostar</span>
+                <h2 class="related-title">COMPLETE O LOOK</h2>
+            </div>
+            <div class="related-grid" id="related-grid"></div>
+        </section>
+    </main>
+
+    <footer class="footer-minimal">
+        <p>&copy; 2026 DREVIK. Todos os direitos reservados.</p>
+    </footer>
+
+    <button class="back-to-top" id="back-to-top" aria-label="Voltar ao topo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="m18 15-6-6-6 6"></path>
+        </svg>
+    </button>
+
+    <!-- SEARCH OVERLAY -->
+    <div class="search-overlay" id="search-overlay" role="dialog" aria-modal="true" aria-label="Buscar produtos" tabindex="-1">
+        <div class="search-content">
+            <button type="button" class="search-close" id="search-close" aria-label="Fechar busca">&times;</button>
+            <input type="text" class="search-input" id="search-input" placeholder="Buscar produtos..." aria-label="Buscar produtos" autocomplete="off">
+            <div class="search-results" id="search-results"></div>
+        </div>
+    </div>
+
+    <!-- CART DRAWER -->
+    <div class="cart-overlay" id="cart-overlay" aria-hidden="true"></div>
+    <aside class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" aria-hidden="true" inert tabindex="-1">
+        <div class="cart-header">
+            <h3 id="cart-title">Sua Sacola</h3>
+            <button type="button" class="cart-close" id="cart-close" aria-label="Fechar sacola">&times;</button>
+        </div>
+        <div class="cart-items" id="cart-items"></div>
+        <div class="cart-footer" id="cart-footer">
+            <div class="cart-subtotal">
+                <span>Subtotal</span>
+                <span id="cart-subtotal">R$ 0,00</span>
+            </div>
+            <p class="cart-shipping-note">Frete combinado diretamente pelo WhatsApp.</p>
+            <button type="button" class="btn-whatsapp-order">Finalizar no WhatsApp</button>
+            <button type="button" class="btn-continue" id="cart-continue">Continuar comprando</button>
+        </div>
+    </aside>
+
+    <!-- STICKY ADD TO CART (Mobile) -->
+    <div class="sticky-add-mobile" id="sticky-add-mobile">
+        <div class="sticky-info">
+            <span id="sticky-name">Produto</span>
+            <span id="sticky-price">R$ 0,00</span>
+        </div>
+        <button type="button" class="btn-sticky-cart" id="btn-sticky-cart" disabled>Adicionar à sacola</button>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast-container" id="toast-container" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <script type="module" src="./src/js/main.js"></script>
+</body>
+>>>>>>> 06f76558dbf81abb05e23f98b20c34ae58c5725f
 </html>

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -307,4 +308,315 @@
 
     <script type="module" src="./src/js/main.js"></script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DREVIK - Streetwear de luxo. Não é apenas roupa, é a sua armadura.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="DREVIK | Streetwear de Luxo">
+    <meta property="og:description" content="DREVIK - Streetwear de luxo. Não é apenas roupa, é a sua armadura.">
+    <meta property="og:image" content="./img/image-section-principal.jpeg">
+    <title>DREVIK | Streetwear de Luxo</title>
+    <link rel="preload" as="image" href="./img/image-section-principal-800w.jpg" imagesrcset="./img/image-section-principal-160w.jpg 160w, ./img/image-section-principal-320w.jpg 320w, ./img/image-section-principal-480w.jpg 480w, ./img/image-section-principal-800w.jpg 800w, ./img/image-section-principal.jpeg 1080w" imagesizes="100vw" fetchpriority="high">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Anton&family=Cinzel:wght@700&family=Inter:wght@300;400;500&display=swap" data-font-stylesheet>
+    <link rel="stylesheet" href="./src/css/main.css">
+</head>
+<body data-page="home">
+
+    <!-- NOISE OVERLAY (textura sutil) -->
+    <div class="noise-overlay"></div>
+
+    <!-- CURSOR -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- PAGE TRANSITION -->
+    <div class="page-transition" id="page-transition"></div>
+
+    <!-- PRELOADER -->
+    <div id="preloader">
+        <div class="preloader-content">
+            <h1 class="preloader-logo">DREVIK</h1>
+            <div class="preloader-line"></div>
+            <p class="preloader-sub">DK</p>
+        </div>
+    </div>
+
+    <!-- ANNOUNCEMENT BAR -->
+    <div class="announcement-bar">
+        <div class="announcement-track">
+            <span>FRETE GRÁTIS ACIMA DE R$ 299</span>
+            <span>✦</span>
+            <span>PHASE ONE — DISPONÍVEL AGORA</span>
+            <span>✦</span>
+            <span>PARCELE EM ATÉ 6X SEM JUROS</span>
+            <span>✦</span>
+            <span>FRETE GRÁTIS ACIMA DE R$ 299</span>
+            <span>✦</span>
+            <span>PHASE ONE — DISPONÍVEL AGORA</span>
+            <span>✦</span>
+            <span>PARCELE EM ATÉ 6X SEM JUROS</span>
+            <span>✦</span>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header id="header">
+        <div class="nav-container">
+            <a href="index.html" class="logo">DK</a>
+            <nav class="nav-links">
+                <a href="shop.html">Coleção</a>
+                <a href="#manifesto">Manifesto</a>
+                <a href="#contact">Contato</a>
+            </nav>
+            <div class="nav-actions">
+                <button class="icon-btn" id="search-toggle" aria-label="Buscar" aria-controls="search-overlay" aria-expanded="false">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+                <button class="icon-btn" id="wishlist-toggle" aria-label="Favoritos">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                    <span class="badge-count" id="wishlist-count">0</span>
+                </button>
+                <button class="icon-btn" id="cart-toggle" aria-label="Abrir sacola" aria-controls="cart-drawer" aria-expanded="false">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <path d="M3 6h18"></path>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    <span class="badge-count" id="cart-count">0</span>
+                </button>
+                <button class="menu-toggle" aria-label="Menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-bg">
+            <img src="./img/image-section-principal.jpeg" srcset="./img/image-section-principal-160w.jpg 160w, ./img/image-section-principal-320w.jpg 320w, ./img/image-section-principal-480w.jpg 480w, ./img/image-section-principal-800w.jpg 800w, ./img/image-section-principal.jpeg 1080w" sizes="100vw" width="1080" height="1440" alt="Modelo usando camiseta DREVIK preta" loading="eager" fetchpriority="high">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-content">
+            <span class="hero-tag reveal-text">Coleção Phase One — 2026</span>
+            <h1 class="reveal-text delay-1">PHASE ONE,<br>BEGINS HERE.</h1>
+            <p class="reveal-text delay-2">A nova era do vestuário essencial.</p>
+            <div class="hero-actions reveal-text delay-3">
+                <a href="shop.html" class="btn-primary">Explorar Coleção</a>
+                <a href="#manifesto" class="btn-ghost">Ler Manifesto</a>
+            </div>
+        </div>
+        <div class="hero-scroll">
+            <span>SCROLL</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee-band">
+        <div class="marquee-track">
+            <span>DREVIK</span><span class="marquee-dot">✦</span>
+            <span>THE PROCESS IS THE ONLY WAY</span><span class="marquee-dot">✦</span>
+            <span>DK</span><span class="marquee-dot">✦</span>
+            <span>STAY HARD</span><span class="marquee-dot">✦</span>
+            <span>DREVIK</span><span class="marquee-dot">✦</span>
+            <span>THE PROCESS IS THE ONLY WAY</span><span class="marquee-dot">✦</span>
+            <span>DK</span><span class="marquee-dot">✦</span>
+            <span>STAY HARD</span><span class="marquee-dot">✦</span>
+        </div>
+    </div>
+
+    <!-- COLEÇÃO EDITORIAL -->
+       <!-- COLEÇÃO — LOOKBOOK EDITORIAL -->
+    <section id="collection" class="collection">
+        <div class="section-header">
+            <span class="section-tag">01 — Coleção</span>
+            <h2 class="section-title">THE PROCESS IS<br>THE ONLY WAY.</h2>
+            <a href="shop.html" class="section-link">Ver todos os produtos →</a>
+        </div>
+
+        <p class="lookbook-hint">
+            <span>Deslize para explorar a coleção</span>
+            <span class="lookbook-hint-line" aria-hidden="true"></span>
+        </p>
+        <div class="lookbook">
+            <!-- Produto 1 -->
+            <a href="product.html?id=the-process-tee" class="lookbook-item lookbook-large">
+                <div class="lookbook-image">
+                    <img src="./colecao/the-process/the-process-frente-modelo.png" srcset="./colecao/the-process/the-process-frente-modelo-160w.jpg 160w, ./colecao/the-process/the-process-frente-modelo-320w.jpg 320w, ./colecao/the-process/the-process-frente-modelo-480w.jpg 480w, ./colecao/the-process/the-process-frente-modelo-800w.jpg 800w, ./colecao/the-process/the-process-frente-modelo.png 1080w" sizes="(max-width: 768px) 78vw, 58vw" width="1080" height="1718" alt="The Process Tee - frente no modelo" loading="lazy">
+                    <span class="lookbook-badge">NOVO</span>
+                    <div class="lookbook-overlay">
+                        <span class="lookbook-cta">Ver produto</span>
+                    </div>
+                </div>
+                <div class="lookbook-info">
+                    <span class="lookbook-number">01</span>
+                    <div class="lookbook-text">
+                        <h3>The Process Tee</h3>
+                        <p>R$ 149,90</p>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Produto 2 -->
+            <a href="product.html?id=every-scar-tee" class="lookbook-item lookbook-medium">
+                <div class="lookbook-image">
+                    <img src="./colecao/every-scar/every-scar-frente-modelo.jpg" srcset="./colecao/every-scar/every-scar-frente-modelo-160w.jpg 160w, ./colecao/every-scar/every-scar-frente-modelo-320w.jpg 320w, ./colecao/every-scar/every-scar-frente-modelo-480w.jpg 480w, ./colecao/every-scar/every-scar-frente-modelo-800w.jpg 800w, ./colecao/every-scar/every-scar-frente-modelo.jpg 1080w" sizes="(max-width: 768px) 78vw, 35vw" width="1080" height="1440" alt="Every Scar Tee - frente no modelo" loading="lazy">
+                    <span class="lookbook-badge">NOVO</span>
+                    <div class="lookbook-overlay">
+                        <span class="lookbook-cta">Ver produto</span>
+                    </div>
+                </div>
+                <div class="lookbook-info">
+                    <span class="lookbook-number">02</span>
+                    <div class="lookbook-text">
+                        <h3>Every Scar Tee</h3>
+                        <p>R$ 149,90</p>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Produto 3 -->
+            <a href="product.html?id=stay-hard-tee" class="lookbook-item lookbook-full">
+                <div class="lookbook-image">
+                    <img src="./colecao/stay-hard/stay-hard-frente-modelo.jpg" srcset="./colecao/stay-hard/stay-hard-frente-modelo-160w.jpg 160w, ./colecao/stay-hard/stay-hard-frente-modelo-320w.jpg 320w, ./colecao/stay-hard/stay-hard-frente-modelo-480w.jpg 480w, ./colecao/stay-hard/stay-hard-frente-modelo-800w.jpg 800w, ./colecao/stay-hard/stay-hard-frente-modelo.jpg 1080w" sizes="(max-width: 768px) 78vw, 58vw" width="1080" height="1350" alt="Stay Hard Tee - frente no modelo" loading="lazy">
+                    <div class="lookbook-overlay">
+                        <span class="lookbook-cta">Ver produto</span>
+                    </div>
+                </div>
+                <div class="lookbook-info">
+                    <span class="lookbook-number">03</span>
+                    <div class="lookbook-text">
+                        <h3>Stay Hard Tee</h3>
+                        <p>R$ 149,90</p>
+                    </div>
+                </div>
+            </a>
+            <a href="product.html?id=phase-one-tee" class="lookbook-item lookbook-large">
+                <div class="lookbook-image">
+                    <img src="./colecao/phase-one/phase-one-frente-modelo.jpg" srcset="./colecao/phase-one/phase-one-frente-modelo-160w.jpg 160w, ./colecao/phase-one/phase-one-frente-modelo-320w.jpg 320w, ./colecao/phase-one/phase-one-frente-modelo-480w.jpg 480w, ./colecao/phase-one/phase-one-frente-modelo-800w.jpg 800w, ./colecao/phase-one/phase-one-frente-modelo.jpg 1080w" sizes="(max-width: 768px) 78vw, 58vw" width="1080" height="1620" alt="Phase One Tee - frente no modelo" loading="lazy">
+                    <span class="lookbook-badge">NOVO</span>
+                    <div class="lookbook-overlay">
+                        <span class="lookbook-cta">Ver produto</span>
+                    </div>
+                </div>
+                <div class="lookbook-info">
+                    <span class="lookbook-number">04</span>
+                    <div class="lookbook-text">
+                        <h3>Phase One Tee</h3>
+                        <p>R$ 159,90</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- MANIFESTO -->
+    <section id="manifesto" class="manifesto">
+        <div class="manifesto-content">
+            <span class="section-tag">02 — Manifesto</span>
+            <h2>NÃO É APENAS ROUPA.<br>É A SUA ARMADURA.</h2>
+            <p>Cada peça DREVIK é desenhada para aqueles que entendem que o processo é solitário, mas a evolução é inevitável. Não seguimos tendências. Nós criamos o nosso próprio caminho.</p>
+        </div>
+    </section>
+
+    <!-- NEWSLETTER -->
+    <section class="newsletter">
+        <div class="newsletter-content">
+            <span class="section-tag">03 — Newsletter</span>
+            <h2>ENTRE NA LISTA.</h2>
+            <p>Seja o primeiro a saber dos próximos drops. Acesso antecipado, ofertas exclusivas.</p>
+            <form class="newsletter-form" id="newsletter-form">
+                <input type="email" placeholder="Seu melhor e-mail" required>
+                <button type="submit">Inscrever</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>DREVIK</h3>
+                <p>DK | DREVIK</p>
+                <p class="footer-desc">Streetwear de luxo feito para quem entende que o processo é o único caminho.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Loja</h4>
+                <a href="shop.html">Coleção</a>
+                <a href="index.html#manifesto">Manifesto</a>
+                <a href="#">Guia de Tamanhos</a>
+                <a href="#">Trocas e Devoluções</a>
+            </div>
+            <div class="footer-links">
+                <h4>Social</h4>
+                <a href="#">Instagram</a>
+                <a href="#">TikTok</a>
+                <a href="#">contato@drevik.com</a>
+            </div>
+        </div>
+        <div class="footer-trust">
+            <span>PIX</span>
+            <span>VISA</span>
+            <span>MASTER</span>
+            <span>ELO</span>
+            <span>BOLETO</span>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 DREVIK. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- BACK TO TOP -->
+    <button class="back-to-top" id="back-to-top" aria-label="Voltar ao topo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="m18 15-6-6-6 6"></path>
+        </svg>
+    </button>
+
+    <!-- SEARCH OVERLAY -->
+    <div class="search-overlay" id="search-overlay" role="dialog" aria-modal="true" aria-label="Buscar produtos" tabindex="-1">
+        <div class="search-content">
+            <button type="button" class="search-close" id="search-close" aria-label="Fechar busca">&times;</button>
+            <input type="text" class="search-input" id="search-input" placeholder="Buscar produtos..." aria-label="Buscar produtos" autocomplete="off">
+            <div class="search-results" id="search-results"></div>
+        </div>
+    </div>
+
+    <!-- CART DRAWER -->
+    <div class="cart-overlay" id="cart-overlay" aria-hidden="true"></div>
+    <aside class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" aria-hidden="true" inert tabindex="-1">
+        <div class="cart-header">
+            <h3 id="cart-title">Sua Sacola</h3>
+            <button type="button" class="cart-close" id="cart-close" aria-label="Fechar sacola">&times;</button>
+        </div>
+        <div class="cart-items" id="cart-items"></div>
+        <div class="cart-footer" id="cart-footer">
+            <div class="cart-subtotal">
+                <span>Subtotal</span>
+                <span id="cart-subtotal">R$ 0,00</span>
+            </div>
+            <p class="cart-shipping-note">Frete combinado diretamente pelo WhatsApp.</p>
+            <button type="button" class="btn-whatsapp-order">Finalizar no WhatsApp</button>
+            <button type="button" class="btn-continue" id="cart-continue">Continuar comprando</button>
+        </div>
+    </aside>
+
+    <!-- TOAST -->
+    <div class="toast-container" id="toast-container" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <script type="module" src="./src/js/main.js"></script>
+</body>
+>>>>>>> 06f76558dbf81abb05e23f98b20c34ae58c5725f
 </html>
