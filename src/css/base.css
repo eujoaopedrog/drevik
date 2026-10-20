@@ -1,0 +1,93 @@
+/* =========================================
+   DREVIK — BASE.CSS
+   ========================================= */
+
+/* =========================================
+   RESET & VARIÁVEIS
+   ========================================= */
+:root {
+    --bg-color: #050505;
+    --bg-elev: #0a0a0a;
+    --bg-card: #111111;
+    --announcement-height: 36px;
+    --text-color: #f5f5f0;
+    --text-dim: rgba(245, 245, 240, 0.6);
+    --text-faint: rgba(245, 245, 240, 0.3);
+    --accent-color: #c0c0c0;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --font-primary: 'Jost', sans-serif;
+    --font-secondary: 'Cinzel', serif;
+    --font-body: 'Inter', sans-serif;
+    --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-fast: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.5;
+}
+
+body.has-custom-cursor {
+    cursor: none;
+}
+
+body.no-scroll {
+    overflow: hidden;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    font-family: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+select:focus-visible,
+.gallery-main:focus-visible {
+    outline: 2px solid var(--text-color);
+    outline-offset: 4px;
+}
+
+/* SCROLLBAR CUSTOM */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
