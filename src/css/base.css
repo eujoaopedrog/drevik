@@ -6,18 +6,36 @@
    RESET & VARIÁVEIS
    ========================================= */
 :root {
-    --bg-color: #050505;
+    --color-pure-black: #000000;
+    --color-off-black: #050505;
+    --color-charcoal: #111111;
+    --color-gray-400: #8b8b8b;
+    --color-gray-600: #565656;
+    --color-gray-800: #242424;
+    --bg-color: var(--color-off-black);
     --bg-elev: #0a0a0a;
-    --bg-card: #111111;
+    --bg-card: var(--color-charcoal);
     --announcement-height: 36px;
     --text-color: #f5f5f0;
-    --text-dim: rgba(245, 245, 240, 0.6);
-    --text-faint: rgba(245, 245, 240, 0.3);
+    --text-dim: rgba(245, 245, 240, 0.72);
+    --text-faint: rgba(245, 245, 240, 0.55);
     --accent-color: #c0c0c0;
     --border-color: rgba(255, 255, 255, 0.08);
-    --font-primary: 'Jost', sans-serif;
+    --font-primary: 'Anton', sans-serif;
     --font-secondary: 'Cinzel', serif;
     --font-body: 'Inter', sans-serif;
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+    --text-hero: clamp(2rem, 5vw, 4rem);
+    --text-display: clamp(2.75rem, 7vw, 6.5rem);
+    --text-title: clamp(1.5rem, 3vw, 2.5rem);
+    --text-body: clamp(0.9rem, 1.1vw, 1rem);
     --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     --transition-fast: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -63,6 +81,29 @@ a {
 
 button {
     font-family: inherit;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(2rem);
+    transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-on-scroll.revealed {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 button:focus-visible,

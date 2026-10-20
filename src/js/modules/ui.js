@@ -1,5 +1,8 @@
-import { formatPrice, $, $$ } from './utils.js';
+import { formatPrice, $, $$, trapFocus, responsiveImageAttributes } from './utils.js';
 import { getCart, getWishlist } from './storage.js';
+import { PRODUCTS } from '../data/products.js';
+
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export const showToast = (message, type = 'success') => {
     const container = $('#toast-container');
@@ -22,6 +25,15 @@ export const showToast = (message, type = 'success') => {
     }, 3000);
 };
 
+export const pulseCartIcon = () => {
+    const cartToggle = $('#cart-toggle');
+    if (!cartToggle || prefersReducedMotion) return;
+    cartToggle.classList.remove('cart-pulse');
+    void cartToggle.offsetWidth;
+    cartToggle.classList.add('cart-pulse');
+    window.setTimeout(() => cartToggle.classList.remove('cart-pulse'), 650);
+};
+
 export const updateBadges = () => {
     const cartCount = getCart().reduce((sum, item) => sum + item.quantity, 0);
     const wishlistCount = getWishlist().length;
@@ -41,21 +53,36 @@ export const updateBadges = () => {
 
 export let attachCursorHover = () => {};
 
-export const initializeUI = ({ PRODUCTS, closeCart }) => {
+export const initializeUI = ({ closeCart }) => {
+const fontPreload = $('link[data-font-stylesheet]');
+if (fontPreload) {
+    const fontStylesheet = document.createElement('link');
+    fontStylesheet.rel = 'stylesheet';
+    fontStylesheet.href = fontPreload.href;
+    fontStylesheet.media = 'print';
+    fontStylesheet.addEventListener('load', () => {
+        fontStylesheet.media = 'all';
+    }, { once: true });
+    document.head.appendChild(fontStylesheet);
+}
+const socialImage = $('meta[property="og:image"]');
+if (socialImage && document.body.dataset.page !== 'product') {
+    socialImage.content = new URL('./img/image-section-principal.jpeg', window.location.href).href;
+}
 const preloader = $('#preloader');
 if (preloader) {
     window.addEventListener('load', () => {
         setTimeout(() => {
             preloader.classList.add('hidden');
             $$('.reveal-text').forEach(el => el.style.animationPlayState = 'running');
-        }, 2200);
+        }, prefersReducedMotion ? 0 : 500);
     });
 }
 
 // =========================================
 // 2. CURSOR CUSTOMIZADO
 // =========================================
-const isDesktop = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+const isDesktop = !prefersReducedMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 if (isDesktop) {
     document.body.classList.add('has-custom-cursor');
@@ -108,9 +135,15 @@ if (header) {
 // 4. MOBILE MENU
 // =========================================
 const menuToggle = $('.menu-toggle');
+let closeMobileMenu = () => {};
 if (menuToggle) {
     const mobileMenu = document.createElement('div');
     mobileMenu.className = 'mobile-menu';
+    mobileMenu.setAttribute('role', 'dialog');
+    mobileMenu.setAttribute('aria-modal', 'true');
+    mobileMenu.setAttribute('aria-label', 'Menu de navegação');
+    mobileMenu.setAttribute('aria-hidden', 'true');
+    mobileMenu.inert = true;
     mobileMenu.innerHTML = `
         <a href="index.html">Início</a>
         <a href="shop.html">Coleção</a>
@@ -119,18 +152,37 @@ if (menuToggle) {
     `;
     document.body.appendChild(mobileMenu);
 
+    closeMobileMenu = () => {
+        if (!mobileMenu.classList.contains('active')) return;
+        mobileMenu.classList.remove('active');
+        mobileMenu.setAttribute('aria-hidden', 'true');
+        mobileMenu.inert = true;
+        menuToggle.classList.remove('active');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('no-scroll');
+        menuToggle.focus();
+    };
+
     menuToggle.addEventListener('click', () => {
-        const isActive = mobileMenu.classList.toggle('active');
-        menuToggle.classList.toggle('active', isActive);
-        document.body.classList.toggle('no-scroll', isActive);
+        if (mobileMenu.classList.contains('active')) {
+            closeMobileMenu();
+            return;
+        }
+        mobileMenu.classList.add('active');
+        mobileMenu.setAttribute('aria-hidden', 'false');
+        mobileMenu.inert = false;
+        menuToggle.classList.add('active');
+        menuToggle.setAttribute('aria-expanded', 'true');
+        document.body.classList.add('no-scroll');
+        mobileMenu.querySelector('a')?.focus();
+    });
+
+    mobileMenu.addEventListener('keydown', event => {
+        if (event.key === 'Tab') trapFocus(mobileMenu, event);
     });
 
     mobileMenu.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-            mobileMenu.classList.remove('active');
-            menuToggle.classList.remove('active');
-            document.body.classList.remove('no-scroll');
-        });
+        link.addEventListener('click', closeMobileMenu);
     });
 }
 
@@ -139,6 +191,9 @@ if (menuToggle) {
 // =========================================
 const pageTransition = $('#page-transition');
 if (pageTransition) {
+    if (prefersReducedMotion) {
+        pageTransition.classList.remove('active', 'exit');
+    } else {
     // Enter animation
     pageTransition.classList.add('active');
     setTimeout(() => {
@@ -166,27 +221,29 @@ if (pageTransition) {
             window.location.href = href;
         }, 500);
     });
+    }
 }
 
 // =========================================
 // 6. SCROLL REVEAL (index)
 // =========================================
-const revealElements = $$('.product-item, .section-header, .manifesto-content, .newsletter-content');
-if (revealElements.length > 0) {
+const revealElements = $$('.product-item, .section-header, .manifesto-content, .newsletter-content, .reveal-on-scroll');
+const lookbookItems = $$('.lookbook-item');
+if (prefersReducedMotion) {
+    lookbookItems.forEach(item => item.classList.add('revealed'));
+}
+if (revealElements.length > 0 && !prefersReducedMotion) {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
+                entry.target.classList.add('revealed');
                 observer.unobserve(entry.target);
             }
         });
     }, { threshold: 0.12 });
 
     revealElements.forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(40px)';
-        el.style.transition = 'opacity 0.9s ease, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1)';
+        el.classList.add('reveal-on-scroll');
         observer.observe(el);
     });
 }
@@ -201,7 +258,7 @@ if (backToTop) {
     }, { passive: true });
 
     backToTop.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
     });
 }
 const searchOverlay = $('#search-overlay');
@@ -213,25 +270,43 @@ const searchResults = $('#search-results');
 const openSearch = () => {
     if (!searchOverlay) return;
     searchOverlay.classList.add('active');
+    searchOverlay.setAttribute('aria-hidden', 'false');
+    searchOverlay.inert = false;
+    searchToggle?.setAttribute('aria-expanded', 'true');
     document.body.classList.add('no-scroll');
     setTimeout(() => {
         if (searchInput) searchInput.focus();
-    }, 300);
+    }, prefersReducedMotion ? 0 : 300);
 };
 
 const closeSearch = () => {
-    if (!searchOverlay) return;
+    if (!searchOverlay || !searchOverlay.classList.contains('active')) return;
     searchOverlay.classList.remove('active');
+    searchOverlay.setAttribute('aria-hidden', 'true');
+    searchOverlay.inert = true;
+    searchToggle?.setAttribute('aria-expanded', 'false');
     document.body.classList.remove('no-scroll');
     if (searchInput) searchInput.value = '';
     if (searchResults) searchResults.innerHTML = '';
+    searchToggle?.focus();
 };
 
 if (searchToggle) searchToggle.addEventListener('click', openSearch);
 if (searchClose) searchClose.addEventListener('click', closeSearch);
+if (searchOverlay) {
+    searchOverlay.setAttribute('aria-hidden', 'true');
+    searchOverlay.inert = true;
+    searchOverlay.addEventListener('click', event => {
+        if (event.target === searchOverlay) closeSearch();
+    });
+    searchOverlay.addEventListener('keydown', event => {
+        if (event.key === 'Tab') trapFocus(searchOverlay, event);
+    });
+}
 
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
+        closeMobileMenu();
         closeSearch();
         closeCart();
     }
@@ -244,8 +319,6 @@ if (searchInput) {
             searchResults.innerHTML = '';
             return;
         }
-
-        if (typeof PRODUCTS === 'undefined') return;
 
         const matches = PRODUCTS.filter(p =>
             p.name.toLowerCase().includes(query) ||
@@ -260,7 +333,7 @@ if (searchInput) {
 
         searchResults.innerHTML = matches.map(p => `
             <a href="product.html?id=${p.id}" class="search-result">
-                <img src="${p.images[0].src}" alt="${p.images[0].alt}">
+                <img src="${p.images[0].src}" alt="${p.images[0].alt}" ${responsiveImageAttributes(p.images[0], '64px')} loading="lazy">
                 <div class="search-result-info">
                     <h4>${p.name}</h4>
                     <p>${formatPrice(p.price)}</p>
@@ -293,8 +366,7 @@ document.addEventListener('click', (e) => {
         showToast('Guia de tamanhos em breve', 'info');
     }
 });
-const lookbookItems = $$('.lookbook-item');
-if (lookbookItems.length > 0) {
+if (lookbookItems.length > 0 && !prefersReducedMotion) {
     const lookbookObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {

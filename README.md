@@ -36,7 +36,8 @@ Loja estática de streetwear da DREVIK, com páginas de coleção e produto, gal
 │       │   ├── catalog.js     # Filtros, ordenação e cartões da loja
 │       │   ├── product-page.js # Galeria e detalhes do produto
 │       │   ├── ui.js          # Menus, animações, busca e mensagens
-│       │   └── utils.js       # Seletores e formatação de preço
+│   │   ├── utils.js       # Formatação, imagens responsivas e foco
+│   │   └── whatsapp.js    # Montagem dos pedidos para WhatsApp
 │       └── main.js            # Entrada JavaScript das três páginas
 ├── package.json
 └── vite.config.js
@@ -80,10 +81,14 @@ Use `kebab-case` em minúsculas para arquivos e pastas, sem acentos ou espaços.
 
 - Catálogo com filtros e ordenação.
 - Página de produto com galeria navegável, variantes e recomendações.
-- Carrinho com quantidades, remoção e subtotal.
+- Seleção de tamanho antes de comprar e atalho para pedido direto via WhatsApp.
+- Sacola lateral com quantidades, remoção, subtotal e mensagem de pedido pronta para WhatsApp.
 - Wishlist e contadores de itens.
 - Persistência de carrinho, wishlist e produtos recentes via `localStorage`.
-- Animações e navegação responsiva existentes.
+- Filtros, ordenação, pré-visualização de outra imagem no catálogo e animações acessíveis.
+- Imagens responsivas com variantes de resolução para reduzir downloads em telas menores.
+
+O telefone da loja usado para pedidos via WhatsApp é configurado em `src/js/modules/whatsapp.js`. O total enviado considera os produtos; o frete é combinado diretamente com a loja.
 
 ## Deploy estático
 

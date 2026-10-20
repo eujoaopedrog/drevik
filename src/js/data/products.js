@@ -18,18 +18,26 @@ export const PRODUCTS = [
         images: [
             {
                 src: './colecao/the-process/the-process-frente-modelo.png',
+                width: 1080,
+                height: 1718,
                 alt: 'The Process Tee - frente no modelo'
             },
             {
                 src: './colecao/the-process/the-process-frente.png',
+                width: 1289,
+                height: 1080,
                 alt: 'The Process Tee - frente'
             },
             {
                 src: './colecao/the-process/the-process-costa-modelo.png',
+                width: 1080,
+                height: 1340,
                 alt: 'The Process Tee - costas no modelo'
             },
             {
                 src: './colecao/the-process/the-process-costas.png',
+                width: 1247,
+                height: 1080,
                 alt: 'The Process Tee - costas'
             }
         ],
@@ -55,18 +63,26 @@ export const PRODUCTS = [
         images: [
             {
                 src: './colecao/every-scar/every-scar-frente-modelo.jpg',
+                width: 1080,
+                height: 1440,
                 alt: 'Every Scar Tee - frente no modelo'
             },
             {
                 src: './colecao/every-scar/every-scar-frente.png',
+                width: 1080,
+                height: 1159,
                 alt: 'Every Scar Tee - frente'
             },
             {
                 src: './colecao/every-scar/every-scar-costas-modelo.png',
+                width: 1080,
+                height: 1319,
                 alt: 'Every Scar Tee - costas no modelo'
             },
             {
                 src: './colecao/every-scar/every-scar-costas.png',
+                width: 1080,
+                height: 1125,
                 alt: 'Every Scar Tee - costas'
             }
         ],
@@ -93,18 +109,26 @@ export const PRODUCTS = [
         images: [
             {
                 src: './colecao/stay-hard/stay-hard-frente-modelo.jpg',
+                width: 1080,
+                height: 1350,
                 alt: 'Stay Hard Tee - frente no modelo'
             },
             {
                 src: './colecao/stay-hard/stay-hard-frente.png',
+                width: 1287,
+                height: 1080,
                 alt: 'Stay Hard Tee - frente'
             },
             {
                 src: './colecao/stay-hard/stay-hard-costas-modelo.png',
+                width: 1080,
+                height: 1349,
                 alt: 'Stay Hard Tee - costas no modelo'
             },
             {
                 src: './colecao/stay-hard/stay-hard-costas.png',
+                width: 1310,
+                height: 1080,
                 alt: 'Stay Hard Tee - costas'
             }
         ],
@@ -130,18 +154,26 @@ export const PRODUCTS = [
         images: [
             {
                 src: './colecao/phase-one/phase-one-frente-modelo.jpg',
+                width: 1080,
+                height: 1620,
                 alt: 'Phase One Tee - frente no modelo'
             },
             {
                 src: './colecao/phase-one/phase-one-frente.png',
+                width: 1080,
+                height: 1187,
                 alt: 'Phase One Tee - frente'
             },
             {
                 src: './colecao/phase-one/phase-one-costas-modelo.jpg',
+                width: 1080,
+                height: 1620,
                 alt: 'Phase One Tee - costas no modelo'
             },
             {
                 src: './colecao/phase-one/phase-one-costas.png',
+                width: 1080,
+                height: 1136,
                 alt: 'Phase One Tee - costas'
             }
         ],
