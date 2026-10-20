@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coleção | DREVIK</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=6">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@300;400;500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
@@ -72,25 +72,28 @@
 
         <div class="shop-intro">
             <h1 class="shop-title">COLEÇÃO PHASE ONE</h1>
-            <p class="shop-subtitle">Todas as peças da coleção. Encontre a sua.</p>
+            <p class="shop-subtitle">Peças essenciais para cada etapa do seu processo.</p>
         </div>
 
         <div class="shop-controls">
             <div class="filter-group">
                 <span class="filter-label">Filtrar:</span>
-                <button class="filter-btn active" data-filter="all">Todos</button>
-                <button class="filter-btn" data-filter="oversized">Oversized</button>
-                <button class="filter-btn" data-filter="regular">Regular</button>
-                <button class="filter-btn" data-filter="new">Novidades</button>
+                <button class="filter-btn active" data-filter="all" aria-pressed="true">Todos</button>
+                <button class="filter-btn" data-filter="oversized" aria-pressed="false">Oversized</button>
+                <button class="filter-btn" data-filter="regular" aria-pressed="false">Regular</button>
+                <button class="filter-btn" data-filter="new" aria-pressed="false">Novidades</button>
             </div>
-            <div class="sort-group">
-                <span class="filter-label">Ordenar:</span>
-                <select class="sort-select" id="sort-select">
-                    <option value="relevance">Relevância</option>
-                    <option value="price-asc">Menor Preço</option>
-                    <option value="price-desc">Maior Preço</option>
-                    <option value="name">Nome (A-Z)</option>
-                </select>
+            <div class="shop-control-meta">
+                <span class="shop-results" id="shop-results" aria-live="polite"></span>
+                <label class="sort-group" for="sort-select">
+                    <span class="filter-label">Ordenar:</span>
+                    <select class="sort-select" id="sort-select">
+                        <option value="relevance">Relevância</option>
+                        <option value="price-asc">Menor preço</option>
+                        <option value="price-desc">Maior preço</option>
+                        <option value="name">Nome (A-Z)</option>
+                    </select>
+                </label>
             </div>
         </div>
 

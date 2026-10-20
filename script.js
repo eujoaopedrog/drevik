@@ -373,7 +373,7 @@ const addToCart = (product, color, size, quantity = 1) => {
             id: product.id,
             name: product.name,
             price: product.price,
-            image: product.images[0],
+            image: product.images[0].src,
             color,
             size,
             quantity
@@ -493,7 +493,7 @@ if (searchInput) {
 
         searchResults.innerHTML = matches.map(p => `
             <a href="product.html?id=${p.id}" class="search-result">
-                <img src="${p.images[0]}" alt="${p.name}">
+                <img src="${p.images[0].src}" alt="${p.images[0].alt}">
                 <div class="search-result-info">
                     <h4>${p.name}</h4>
                     <p>${formatPrice(p.price)}</p>
@@ -513,6 +513,7 @@ const shopGrid = $('#shop-grid');
 if (shopGrid && typeof PRODUCTS !== 'undefined') {
     let currentFilter = 'all';
     let currentSort = 'relevance';
+    const shopResults = $('#shop-results');
 
     const renderShop = () => {
         let filtered = currentFilter === 'all'
@@ -535,7 +536,12 @@ if (shopGrid && typeof PRODUCTS !== 'undefined') {
 
         if (filtered.length === 0) {
             shopGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;opacity:0.5;padding:4rem;">Nenhum produto encontrado.</p>';
+            if (shopResults) shopResults.textContent = '0 produtos';
             return;
+        }
+
+        if (shopResults) {
+            shopResults.textContent = `${filtered.length} ${filtered.length === 1 ? 'peça' : 'peças'}`;
         }
 
         const wishlist = getWishlist();
@@ -551,7 +557,7 @@ if (shopGrid && typeof PRODUCTS !== 'undefined') {
                 <div class="product-card" data-id="${product.id}">
                     <a href="product.html?id=${product.id}" class="card-link">
                         <div class="card-image">
-                            <img src="${product.images[0]}" alt="${product.name}" loading="lazy">
+                            <img src="${product.images[0].src}" alt="${product.images[0].alt}" loading="lazy">
                             ${badges.length ? `<div class="card-badges">${badges.join('')}</div>` : ''}
                             <button class="card-wishlist ${isWished ? 'active' : ''}" data-wishlist="${product.id}" aria-label="Adicionar aos favoritos">
                                 <svg viewBox="0 0 24 24" fill="${isWished ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.5">
@@ -595,7 +601,9 @@ if (shopGrid && typeof PRODUCTS !== 'undefined') {
     $$('.filter-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             $$('.filter-btn').forEach(b => b.classList.remove('active'));
+            $$('.filter-btn').forEach(b => b.setAttribute('aria-pressed', 'false'));
             btn.classList.add('active');
+            btn.setAttribute('aria-pressed', 'true');
             currentFilter = btn.dataset.filter;
             renderShop();
         });
@@ -643,6 +651,7 @@ if (productLayout && typeof PRODUCTS !== 'undefined') {
 
         const colors = product.colors;
         const sizes = product.sizes;
+        let selectedSize = sizes.find(size => !product.sizesOutOfStock?.includes(size)) || sizes[0];
         const discount = product.oldPrice
             ? Math.round((1 - product.price / product.oldPrice) * 100)
             : 0;
@@ -651,13 +660,27 @@ if (productLayout && typeof PRODUCTS !== 'undefined') {
             <div class="product-gallery-wrap">
                 <div class="thumbnails" id="thumbnails">
                     ${product.images.map((img, i) => `
-                        <div class="thumb ${i === 0 ? 'active' : ''}" data-index="${i}">
-                            <img src="${img}" alt="Miniatura ${i + 1}">
-                        </div>
+                        <button type="button" class="thumb ${i === 0 ? 'active' : ''}" data-index="${i}"
+                                aria-label="Ver imagem ${i + 1}: ${img.alt}" aria-pressed="${i === 0}">
+                            <img src="${img.src}" alt="${img.alt}">
+                        </button>
                     `).join('')}
                 </div>
-                <div class="gallery-main" id="gallery-main">
-                    <img src="${product.images[0]}" alt="${product.name}" id="gallery-main-img">
+                <div class="gallery-main" id="gallery-main" tabindex="0"
+                     aria-label="Galeria de ${product.name}. Use as setas esquerda e direita para trocar a imagem.">
+                    <img src="${product.images[0].src}" alt="${product.images[0].alt}" id="gallery-main-img">
+                    <button type="button" class="gallery-arrow gallery-arrow-prev" id="gallery-prev"
+                            aria-label="Ver imagem anterior">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+                    </button>
+                    <button type="button" class="gallery-arrow gallery-arrow-next" id="gallery-next"
+                            aria-label="Ver próxima imagem">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+                    </button>
+                    <div class="gallery-status">
+                        <span id="gallery-caption">${product.images[0].alt.split(' - ').slice(1).join(' - ')}</span>
+                        <span id="gallery-counter" aria-live="polite">01 / ${String(product.images.length).padStart(2, '0')}</span>
+                    </div>
                 </div>
             </div>
 
@@ -678,6 +701,7 @@ if (productLayout && typeof PRODUCTS !== 'undefined') {
                             <button class="color-btn ${i === 0 ? 'active' : ''}"
                                     style="background-color: ${color.hex};"
                                     data-color="${color.name}"
+                                    aria-pressed="${i === 0}"
                                     aria-label="${color.name}"></button>
                         `).join('')}
                     </div>
@@ -691,8 +715,8 @@ if (productLayout && typeof PRODUCTS !== 'undefined') {
                     <div class="size-options" id="size-options">
                         ${sizes.map((size, i) => {
                             const outOfStock = product.sizesOutOfStock?.includes(size);
-                            const isActive = !outOfStock && i === 0;
-                            return `<button class="size-btn ${isActive ? 'active' : ''}" ${outOfStock ? 'disabled' : ''}>${size}</button>`;
+                            const isActive = !outOfStock && size === selectedSize;
+                            return `<button class="size-btn ${isActive ? 'active' : ''}" aria-pressed="${isActive}" ${outOfStock ? 'disabled aria-label="' + size + ' - esgotado"' : ''}>${size}</button>`;
                         }).join('')}
                     </div>
                 </div>
@@ -704,7 +728,7 @@ if (productLayout && typeof PRODUCTS !== 'undefined') {
 
                 <div class="product-desc">
                     <h3>Detalhes da Peça</h3>
-                    <p>${product.description}</p>
+                    ${product.description.map(paragraph => `<p>${paragraph}</p>`).join('')}
                     <ul>${product.details.map(d => `<li>${d}</li>`).join('')}</ul>
                 </div>
             </div>
@@ -713,15 +737,73 @@ if (productLayout && typeof PRODUCTS !== 'undefined') {
         // === Galeria ===
         const mainImg = $('#gallery-main-img');
         const thumbs = $$('.thumb');
+        const thumbnails = $('#thumbnails');
+        const gallery = $('#gallery-main');
+        const galleryCaption = $('#gallery-caption');
+        const galleryCounter = $('#gallery-counter');
+        let activeImageIndex = 0;
+
+        const setActiveImage = (index) => {
+            activeImageIndex = (index + product.images.length) % product.images.length;
+            const image = product.images[activeImageIndex];
+
+            if (mainImg) {
+                mainImg.src = image.src;
+                mainImg.alt = image.alt;
+            }
+            if (galleryCaption) {
+                galleryCaption.textContent = image.alt.split(' - ').slice(1).join(' - ');
+            }
+            if (galleryCounter) {
+                galleryCounter.textContent = `${String(activeImageIndex + 1).padStart(2, '0')} / ${String(product.images.length).padStart(2, '0')}`;
+            }
+            thumbs.forEach((thumb, thumbIndex) => {
+                const isActive = thumbIndex === activeImageIndex;
+                thumb.classList.toggle('active', isActive);
+                thumb.setAttribute('aria-pressed', String(isActive));
+                if (isActive && thumbnails && window.matchMedia('(max-width: 768px)').matches) {
+                    thumbnails.scrollTo({ left: thumb.offsetLeft, behavior: 'smooth' });
+                }
+            });
+        };
 
         thumbs.forEach(thumb => {
             thumb.addEventListener('click', () => {
-                thumbs.forEach(t => t.classList.remove('active'));
-                thumb.classList.add('active');
-                const index = parseInt(thumb.dataset.index);
-                if (mainImg) mainImg.src = product.images[index];
+                setActiveImage(Number(thumb.dataset.index));
             });
         });
+
+        const galleryPrev = $('#gallery-prev');
+        const galleryNext = $('#gallery-next');
+        if (galleryPrev) galleryPrev.addEventListener('click', () => setActiveImage(activeImageIndex - 1));
+        if (galleryNext) galleryNext.addEventListener('click', () => setActiveImage(activeImageIndex + 1));
+
+        if (gallery) {
+            gallery.addEventListener('keydown', (event) => {
+                if (event.key === 'ArrowLeft') {
+                    event.preventDefault();
+                    setActiveImage(activeImageIndex - 1);
+                } else if (event.key === 'ArrowRight') {
+                    event.preventDefault();
+                    setActiveImage(activeImageIndex + 1);
+                }
+            });
+
+            let pointerStartX = null;
+            gallery.addEventListener('pointerdown', (event) => {
+                if (event.pointerType === 'touch') pointerStartX = event.clientX;
+            });
+            gallery.addEventListener('pointerup', (event) => {
+                if (pointerStartX === null) return;
+                const swipeDistance = event.clientX - pointerStartX;
+                pointerStartX = null;
+                if (Math.abs(swipeDistance) < 40) return;
+                setActiveImage(activeImageIndex + (swipeDistance < 0 ? 1 : -1));
+            });
+            gallery.addEventListener('pointercancel', () => {
+                pointerStartX = null;
+            });
+        }
 
         // === Seletores ===
         const colorBtns = $$('.color-btn');
@@ -729,12 +811,15 @@ if (productLayout && typeof PRODUCTS !== 'undefined') {
         const selectedColorName = $('#selected-color-name');
 
         let selectedColor = colors[0].name;
-        let selectedSize = sizes.find(s => !product.sizesOutOfStock?.includes(s)) || sizes[0];
 
         colorBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                colorBtns.forEach(b => b.classList.remove('active'));
+                colorBtns.forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-pressed', 'false');
+                });
                 btn.classList.add('active');
+                btn.setAttribute('aria-pressed', 'true');
                 selectedColor = btn.dataset.color;
                 if (selectedColorName) selectedColorName.textContent = selectedColor;
             });
@@ -743,8 +828,12 @@ if (productLayout && typeof PRODUCTS !== 'undefined') {
         sizeBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 if (btn.disabled) return;
-                sizeBtns.forEach(b => b.classList.remove('active'));
+                sizeBtns.forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-pressed', 'false');
+                });
                 btn.classList.add('active');
+                btn.setAttribute('aria-pressed', 'true');
                 selectedSize = btn.textContent.trim();
             });
         });
@@ -811,7 +900,7 @@ if (productLayout && typeof PRODUCTS !== 'undefined') {
                 relatedGrid.innerHTML = toShow.map(p => `
                     <a href="product.html?id=${p.id}" class="product-card">
                         <div class="card-image">
-                            <img src="${p.images[0]}" alt="${p.name}" loading="lazy">
+                            <img src="${p.images[0].src}" alt="${p.images[0].alt}" loading="lazy">
                         </div>
                         <div class="card-info">
                             <h3>${p.name}</h3>
