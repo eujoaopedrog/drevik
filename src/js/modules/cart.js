@@ -1,12 +1,15 @@
-import { formatPrice, $ } from './utils.js';
+import { PRODUCTS } from '../data/products.js';
+import { formatPrice, $, responsiveImageAttributes, trapFocus } from './utils.js';
 import { getCart, setCart } from './storage.js';
-import { attachCursorHover, showToast, updateBadges } from './ui.js';
+import { attachCursorHover, pulseCartIcon, showToast, updateBadges } from './ui.js';
+import { openWhatsAppOrder } from './whatsapp.js';
 
 const cartDrawer = $('#cart-drawer');
 const cartOverlay = $('#cart-overlay');
 const cartItemsEl = $('#cart-items');
 const cartFooter = $('#cart-footer');
 const cartSubtotal = $('#cart-subtotal');
+let lastFocusedElement = null;
 
 const renderCart = () => {
     if (!cartItemsEl) return;
@@ -30,24 +33,28 @@ const renderCart = () => {
 
     if (cartFooter) cartFooter.style.display = 'block';
 
-    cartItemsEl.innerHTML = cart.map((item, index) => `
-        <div class="cart-item" data-index="${index}">
+    cartItemsEl.innerHTML = cart.map((item, index) => {
+        const image = PRODUCTS.find(product => product.id === item.id)?.images[0];
+        const dimensions = image || { width: 1080, height: 1440, src: item.image };
+        return `
+        <article class="cart-item" data-index="${index}">
             <div class="cart-item-img">
-                <img src="${item.image}" alt="${item.name}">
+                <img src="${item.image}" alt="${item.name}" ${responsiveImageAttributes(dimensions, '80px')} loading="lazy">
             </div>
             <div class="cart-item-info">
                 <h4>${item.name}</h4>
                 <span class="cart-item-meta">${item.color} / ${item.size}</span>
                 <span class="cart-item-price">${formatPrice(item.price)}</span>
                 <div class="cart-item-qty">
-                    <button class="qty-btn" data-action="minus" data-index="${index}">−</button>
+                    <button type="button" class="qty-btn" data-action="minus" data-index="${index}" aria-label="Diminuir quantidade de ${item.name}">−</button>
                     <span class="qty-value">${item.quantity}</span>
-                    <button class="qty-btn" data-action="plus" data-index="${index}">+</button>
+                    <button type="button" class="qty-btn" data-action="plus" data-index="${index}" aria-label="Aumentar quantidade de ${item.name}">+</button>
                 </div>
             </div>
-            <button class="cart-item-remove" data-index="${index}">Remover</button>
-        </div>
-    `).join('');
+            <button type="button" class="cart-item-remove" data-index="${index}" aria-label="Remover ${item.name} da sacola">Remover</button>
+        </article>
+    `;
+    }).join('');
 
     const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
     if (cartSubtotal) cartSubtotal.textContent = formatPrice(total);
@@ -88,15 +95,26 @@ export const openCart = () => {
     if (!cartDrawer) return;
     renderCart();
     cartDrawer.classList.add('active');
+    cartDrawer.setAttribute('aria-hidden', 'false');
+    cartDrawer.inert = false;
+    $('#cart-toggle')?.setAttribute('aria-expanded', 'true');
     if (cartOverlay) cartOverlay.classList.add('active');
     document.body.classList.add('no-scroll');
+    lastFocusedElement = document.activeElement;
+    $('#cart-close')?.focus();
 };
 
 export const closeCart = () => {
-    if (!cartDrawer) return;
+    if (!cartDrawer || !cartDrawer.classList.contains('active')) return;
     cartDrawer.classList.remove('active');
+    cartDrawer.setAttribute('aria-hidden', 'true');
+    cartDrawer.inert = true;
+    $('#cart-toggle')?.setAttribute('aria-expanded', 'false');
     if (cartOverlay) cartOverlay.classList.remove('active');
     document.body.classList.remove('no-scroll');
+    if (lastFocusedElement instanceof HTMLElement && lastFocusedElement.isConnected) {
+        lastFocusedElement.focus();
+    }
 };
 
 export const addToCart = (product, color, size, quantity = 1) => {
@@ -121,26 +139,48 @@ export const addToCart = (product, color, size, quantity = 1) => {
 
     setCart(cart);
     updateBadges();
-    showToast(`${product.name} adicionado ao carrinho`);
+    pulseCartIcon();
+    showToast('Item adicionado à sacola');
 };
 
 export const initializeCart = () => {
     const cartToggle = $('#cart-toggle');
     const cartClose = $('#cart-close');
     const cartContinue = $('#cart-continue');
-    const checkoutBtn = $('.btn-checkout');
+    const whatsappOrderButton = $('.btn-whatsapp-order');
+
+    if (cartDrawer) {
+        cartDrawer.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                closeCart();
+            } else if (event.key === 'Tab') {
+                trapFocus(cartDrawer, event);
+            }
+        });
+    }
 
     if (cartToggle) cartToggle.addEventListener('click', openCart);
     if (cartClose) cartClose.addEventListener('click', closeCart);
     if (cartOverlay) cartOverlay.addEventListener('click', closeCart);
     if (cartContinue) cartContinue.addEventListener('click', closeCart);
 
-    if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', () => {
-            showToast('Redirecionando para o checkout seguro...', 'info');
+    if (whatsappOrderButton) {
+        whatsappOrderButton.addEventListener('click', () => {
+            const cart = getCart();
+            if (cart.length === 0) {
+                showToast('Adicione ao menos um produto à sacola.', 'info');
+                return;
+            }
+            const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            openWhatsAppOrder(cart, total);
         });
     }
 
+    if (cartDrawer) {
+        cartDrawer.setAttribute('aria-hidden', 'true');
+        cartDrawer.inert = true;
+    }
     updateBadges();
     renderCart();
 };

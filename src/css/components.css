@@ -140,9 +140,27 @@ body.has-custom-cursor .cursor-outline {
 }
 
 .collection .section-header {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: end;
+    gap: var(--space-4);
     margin-bottom: 8rem;
-    max-width: 900px;
-    grid-column: auto;
+    max-width: none;
+}
+
+.collection .section-header .section-tag {
+    grid-column: 1 / 5;
+}
+
+.collection .section-header .section-title {
+    grid-column: 1 / 9;
+    grid-row: 2;
+}
+
+.collection .section-header .section-link {
+    grid-column: 9 / 13;
+    grid-row: 2;
+    justify-self: end;
 }
 
 .lookbook-hint {
@@ -678,10 +696,31 @@ footer {
 
 /* SKELETON */
 .skeleton-card {
-    aspect-ratio: 3 / 4;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+}
+
+.skeleton-image,
+.skeleton-line {
     background: linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%);
     background-size: 200% 100%;
     animation: skeleton 1.5s infinite;
+    border: 1px solid var(--border-color);
+}
+
+.skeleton-image {
+    aspect-ratio: 4 / 5;
+}
+
+.skeleton-line {
+    width: 68%;
+    height: 0.85rem;
+}
+
+.skeleton-line.short {
+    width: 38%;
+    height: 0.65rem;
 }
 
 @keyframes skeleton {
@@ -723,12 +762,35 @@ footer {
     aspect-ratio: 4 / 5;
 }
 
+.card-media-link {
+    position: absolute;
+    inset: 0;
+    display: block;
+    z-index: 0;
+}
+
 .card-image img {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center 20%;
-    transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.45s ease, transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-image-alt {
+    opacity: 0;
+}
+
+.product-card:hover .card-image-alt,
+.product-card:focus-within .card-image-alt {
+    opacity: 1;
+}
+
+.product-card:hover .card-image-primary,
+.product-card:focus-within .card-image-primary {
+    opacity: 0;
 }
 
 .product-card:hover .card-image img {
@@ -809,13 +871,14 @@ footer {
     bottom: 0;
     left: 0;
     width: 100%;
-    padding: 1.5rem;
+    padding: var(--space-4);
     background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
     opacity: 0;
     transform: translateY(10px);
     transition: var(--transition-smooth);
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
 }
 
 .product-card:hover .card-actions {
@@ -827,7 +890,7 @@ footer {
     background: var(--text-color);
     color: var(--bg-color);
     border: none;
-    padding: 0.8rem 2rem;
+    padding: 0.8rem 1rem;
     font-family: var(--font-body);
     font-size: 0.7rem;
     text-transform: uppercase;
@@ -836,6 +899,21 @@ footer {
     width: 100%;
     transition: var(--transition-fast);
     font-weight: 500;
+}
+
+.card-size-select {
+    width: 100%;
+    min-height: 42px;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    background: rgba(5, 5, 5, 0.92);
+    color: var(--text-color);
+    font: inherit;
+    font-size: 0.75rem;
+}
+
+.card-size-select:disabled {
+    opacity: 0.55;
 }
 
 .btn-add:hover {
@@ -852,6 +930,10 @@ footer {
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
+}
+
+.card-info a {
+    display: block;
 }
 
 .card-info h3 {
@@ -1148,6 +1230,12 @@ footer {
     flex-wrap: wrap;
 }
 
+.size-hint {
+    min-height: 1.25em;
+    color: var(--text-dim);
+    font-size: 0.75rem;
+}
+
 .color-btn {
     width: 32px;
     height: 32px;
@@ -1250,7 +1338,8 @@ footer {
 }
 
 .btn-add-cart:disabled,
-.btn-buy-now:disabled {
+.btn-buy-now:disabled,
+.btn-sticky-cart:disabled {
     opacity: 0.4;
     cursor: not-allowed;
 }
@@ -1318,6 +1407,23 @@ footer {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 2rem 1.5rem;
+}
+
+.reveal-on-scroll {
+    will-change: opacity, transform;
+}
+
+@media (hover: none) {
+    .product-card .card-actions,
+    .product-card .card-wishlist {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cartPulse {
+    0%, 100% { transform: scale(1); }
+    45% { transform: scale(1.18); }
 }
 
 /* =========================================

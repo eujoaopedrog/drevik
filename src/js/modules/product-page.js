@@ -1,8 +1,9 @@
 import { PRODUCTS } from '../data/products.js';
-import { formatPrice, $, $$ } from './utils.js';
+import { formatPrice, $, $$, responsiveImageAttributes, responsiveImageSrcset } from './utils.js';
 import { getRecent, setRecent } from './storage.js';
 import { addToCart, openCart } from './cart.js';
 import { attachCursorHover, showToast } from './ui.js';
+import { openWhatsAppOrder } from './whatsapp.js';
 
 export const initializeProductPage = () => {
 const productLayout = $('#product-layout');
@@ -22,6 +23,43 @@ if (productLayout && typeof PRODUCTS !== 'undefined') {
         `;
     } else {
         document.title = `${product.name} | DREVIK`;
+        const description = product.description[0];
+        const socialImage = new URL(product.images[0].src, window.location.href).href;
+        const descriptionMeta = $('meta[name="description"]');
+        const socialTitleMeta = $('meta[property="og:title"]');
+        const socialDescriptionMeta = $('meta[property="og:description"]');
+        const socialImageMeta = $('meta[property="og:image"]');
+
+        if (descriptionMeta) descriptionMeta.content = description;
+        if (socialTitleMeta) socialTitleMeta.content = `${product.name} | DREVIK`;
+        if (socialDescriptionMeta) socialDescriptionMeta.content = description;
+        if (socialImageMeta) socialImageMeta.content = socialImage;
+
+        const structuredData = {
+            '@context': 'https://schema.org',
+            '@type': 'Product',
+            name: product.name,
+            description: product.description.join(' '),
+            image: product.images.map(image => new URL(image.src, window.location.href).href),
+            brand: { '@type': 'Brand', name: 'DREVIK' },
+            sku: product.id,
+            offers: {
+                '@type': 'Offer',
+                priceCurrency: 'BRL',
+                price: product.price.toFixed(2),
+                availability: product.isSoldOut
+                    ? 'https://schema.org/OutOfStock'
+                    : 'https://schema.org/InStock',
+                url: window.location.href
+            }
+        };
+        let structuredDataScript = $('script[type="application/ld+json"]');
+        if (!structuredDataScript) {
+            structuredDataScript = document.createElement('script');
+            structuredDataScript.type = 'application/ld+json';
+            document.head.appendChild(structuredDataScript);
+        }
+        structuredDataScript.textContent = JSON.stringify(structuredData);
 
         const bcProduct = $('#breadcrumb-product');
         if (bcProduct) bcProduct.textContent = product.name;
@@ -33,29 +71,29 @@ if (productLayout && typeof PRODUCTS !== 'undefined') {
 
         const colors = product.colors;
         const sizes = product.sizes;
-        let selectedSize = sizes.find(size => !product.sizesOutOfStock?.includes(size)) || sizes[0];
+        let selectedSize = '';
         const discount = product.oldPrice
             ? Math.round((1 - product.price / product.oldPrice) * 100)
             : 0;
 
         productLayout.innerHTML = `
-            <div class="product-gallery-wrap">
-                <div class="thumbnails" id="thumbnails">
+            <section class="product-gallery-wrap" aria-label="Galeria de imagens do produto">
+                <div class="thumbnails" id="thumbnails" aria-label="Miniaturas do produto">
                     ${product.images.map((img, i) => `
                         <button type="button" class="thumb ${i === 0 ? 'active' : ''}" data-index="${i}"
                                 aria-label="Ver imagem ${i + 1}: ${img.alt}" aria-pressed="${i === 0}">
-                            <img src="${img.src}" alt="${img.alt}">
+                            <img src="${img.src}" alt="" ${responsiveImageAttributes(img, '(max-width: 768px) 15vw, 76px')} loading="lazy">
                         </button>
                     `).join('')}
                 </div>
-                <div class="gallery-main" id="gallery-main" tabindex="0"
+                <div class="gallery-main" id="gallery-main" role="region" aria-roledescription="carrossel" tabindex="0"
                      aria-label="Galeria de ${product.name}. Use as setas esquerda e direita para trocar a imagem.">
-                    <img src="${product.images[0].src}" alt="${product.images[0].alt}" id="gallery-main-img">
-                    <button type="button" class="gallery-arrow gallery-arrow-prev" id="gallery-prev"
+                    <img src="${product.images[0].src}" alt="${product.images[0].alt}" ${responsiveImageAttributes(product.images[0], '(max-width: 768px) 100vw, 60vw')} id="gallery-main-img" loading="eager" fetchpriority="high">
+                    <button type="button" class="gallery-arrow gallery-arrow-prev" id="gallery-prev" aria-controls="gallery-main"
                             aria-label="Ver imagem anterior">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
                     </button>
-                    <button type="button" class="gallery-arrow gallery-arrow-next" id="gallery-next"
+                    <button type="button" class="gallery-arrow gallery-arrow-next" id="gallery-next" aria-controls="gallery-main"
                             aria-label="Ver próxima imagem">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
                     </button>
@@ -64,11 +102,11 @@ if (productLayout && typeof PRODUCTS !== 'undefined') {
                         <span id="gallery-counter" aria-live="polite">01 / ${String(product.images.length).padStart(2, '0')}</span>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="product-details">
+            <section class="product-details" aria-labelledby="product-title">
                 <span class="brand-tag">DK | DREVIK</span>
-                <h1 class="product-name">${product.name}</h1>
+                <h1 class="product-name" id="product-title">${product.name}</h1>
                 ${product.tagline ? `<p class="product-tagline">"${product.tagline}"</p>` : ''}
                 <div class="product-price-row">
                     ${product.oldPrice ? `<span class="product-price-old">${formatPrice(product.oldPrice)}</span>` : ''}
@@ -94,18 +132,18 @@ if (productLayout && typeof PRODUCTS !== 'undefined') {
                         <span class="selector-label">Tamanho</span>
                         <a href="#" class="size-guide">Guia de Tamanhos</a>
                     </div>
-                    <div class="size-options" id="size-options">
+                    <div class="size-options" id="size-options" role="group" aria-label="Escolha um tamanho">
                         ${sizes.map((size, i) => {
                             const outOfStock = product.sizesOutOfStock?.includes(size);
-                            const isActive = !outOfStock && size === selectedSize;
-                            return `<button class="size-btn ${isActive ? 'active' : ''}" aria-pressed="${isActive}" ${outOfStock ? 'disabled aria-label="' + size + ' - esgotado"' : ''}>${size}</button>`;
+                            return `<button type="button" class="size-btn" aria-pressed="false" aria-label="${size}${outOfStock ? ' - esgotado' : ''}" ${outOfStock ? 'disabled' : ''}>${size}</button>`;
                         }).join('')}
                     </div>
+                    <p class="size-hint" id="size-hint" aria-live="polite">Escolha um tamanho para continuar.</p>
                 </div>
 
                 <div class="product-actions">
-                    <button class="btn-add-cart" id="btn-add-cart" ${product.isSoldOut ? 'disabled' : ''}>${product.isSoldOut ? 'Esgotado' : 'Adicionar ao Carrinho'}</button>
-                    <button class="btn-buy-now" id="btn-buy-now" ${product.isSoldOut ? 'disabled' : ''}>${product.isSoldOut ? 'Esgotado' : 'Comprar Agora'}</button>
+                    <button class="btn-add-cart" id="btn-add-cart" disabled>${product.isSoldOut ? 'Esgotado' : 'Adicionar à Sacola'}</button>
+                    <button class="btn-buy-now" id="btn-buy-now" disabled>${product.isSoldOut ? 'Esgotado' : 'Comprar via WhatsApp'}</button>
                 </div>
 
                 <div class="product-desc">
@@ -113,7 +151,7 @@ if (productLayout && typeof PRODUCTS !== 'undefined') {
                     ${product.description.map(paragraph => `<p>${paragraph}</p>`).join('')}
                     <ul>${product.details.map(d => `<li>${d}</li>`).join('')}</ul>
                 </div>
-            </div>
+            </section>
         `;
 
         // === Galeria ===
@@ -131,7 +169,10 @@ if (productLayout && typeof PRODUCTS !== 'undefined') {
 
             if (mainImg) {
                 mainImg.src = image.src;
+                mainImg.srcset = responsiveImageSrcset(image);
                 mainImg.alt = image.alt;
+                mainImg.width = image.width;
+                mainImg.height = image.height;
             }
             if (galleryCaption) {
                 galleryCaption.textContent = image.alt.split(' - ').slice(1).join(' - ');
@@ -144,7 +185,10 @@ if (productLayout && typeof PRODUCTS !== 'undefined') {
                 thumb.classList.toggle('active', isActive);
                 thumb.setAttribute('aria-pressed', String(isActive));
                 if (isActive && thumbnails && window.matchMedia('(max-width: 768px)').matches) {
-                    thumbnails.scrollTo({ left: thumb.offsetLeft, behavior: 'smooth' });
+                    thumbnails.scrollTo({
+                        left: thumb.offsetLeft,
+                        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+                    });
                 }
             });
         };
@@ -217,6 +261,11 @@ if (productLayout && typeof PRODUCTS !== 'undefined') {
                 btn.classList.add('active');
                 btn.setAttribute('aria-pressed', 'true');
                 selectedSize = btn.textContent.trim();
+                const sizeHint = $('#size-hint');
+                if (sizeHint) sizeHint.textContent = `Tamanho selecionado: ${selectedSize}`;
+                [$('#btn-add-cart'), $('#btn-buy-now'), $('#btn-sticky-cart')].forEach(button => {
+                    if (button) button.disabled = product.isSoldOut;
+                });
             });
         });
 
@@ -226,6 +275,11 @@ if (productLayout && typeof PRODUCTS !== 'undefined') {
 
         if (btnAddCart && !product.isSoldOut) {
             btnAddCart.addEventListener('click', () => {
+                if (!selectedSize) {
+                    showToast('Escolha um tamanho para continuar.', 'info');
+                    [...sizeBtns].find(button => !button.disabled)?.focus();
+                    return;
+                }
                 addToCart(product, selectedColor, selectedSize);
                 openCart();
             });
@@ -233,9 +287,18 @@ if (productLayout && typeof PRODUCTS !== 'undefined') {
 
         if (btnBuyNow && !product.isSoldOut) {
             btnBuyNow.addEventListener('click', () => {
-                addToCart(product, selectedColor, selectedSize);
-                showToast('Redirecionando para o checkout...', 'info');
-                // window.location.href = 'https://seu-link-checkout';
+                if (!selectedSize) {
+                    showToast('Escolha um tamanho para continuar.', 'info');
+                    [...sizeBtns].find(button => !button.disabled)?.focus();
+                    return;
+                }
+                openWhatsAppOrder([{
+                    quantity: 1,
+                    name: product.name,
+                    color: selectedColor,
+                    size: selectedSize,
+                    price: product.price
+                }], product.price);
             });
         }
 
@@ -256,6 +319,11 @@ if (productLayout && typeof PRODUCTS !== 'undefined') {
             if (btnStickyCart) {
                 btnStickyCart.addEventListener('click', () => {
                     if (product.isSoldOut) return;
+                    if (!selectedSize) {
+                        showToast('Escolha um tamanho para continuar.', 'info');
+                        [...sizeBtns].find(button => !button.disabled)?.focus();
+                        return;
+                    }
                     addToCart(product, selectedColor, selectedSize);
                     openCart();
                 });
@@ -280,15 +348,17 @@ if (productLayout && typeof PRODUCTS !== 'undefined') {
             if (toShow.length > 0) {
                 relatedSection.style.display = 'block';
                 relatedGrid.innerHTML = toShow.map(p => `
-                    <a href="product.html?id=${p.id}" class="product-card">
+                    <article class="product-card">
+                    <a href="product.html?id=${p.id}" class="card-link">
                         <div class="card-image">
-                            <img src="${p.images[0].src}" alt="${p.images[0].alt}" loading="lazy">
+                            <img src="${p.images[0].src}" alt="${p.images[0].alt}" ${responsiveImageAttributes(p.images[0], '(max-width: 768px) 50vw, 25vw')} loading="lazy">
                         </div>
                         <div class="card-info">
                             <h3>${p.name}</h3>
                             <p class="price">${formatPrice(p.price)}</p>
                         </div>
                     </a>
+                    </article>
                 `).join('');
 
                 attachCursorHover();

@@ -154,6 +154,10 @@ header.header-solid {
     transform: scale(1);
 }
 
+.cart-pulse {
+    animation: cartPulse 0.65s ease;
+}
+
 .menu-toggle {
     display: none;
     background: none;
