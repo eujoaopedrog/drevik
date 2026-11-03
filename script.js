@@ -14,6 +14,7 @@ const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 const whatsappUrl = (text) => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 const findProduct = (id) => PRODUCTS.find(p => p.id === id);
+const colors0IsDark = (product) => product.colors[0].name === 'Preto';
 
 const HEART_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>';
 
@@ -78,7 +79,7 @@ document.body.insertAdjacentHTML('beforeend', `
                 <span>Subtotal</span>
                 <strong id="cart-subtotal">R$ 0,00</strong>
             </div>
-            <a class="btn btn-light btn-block" id="cart-whatsapp" target="_blank" rel="noopener">Finalizar no WhatsApp</a>
+            <a class="btn btn-primary btn-block" id="cart-whatsapp" target="_blank" rel="noopener">Finalizar no WhatsApp</a>
             <p class="cart-footnote">Abre uma mensagem pronta. Pagamento e frete são combinados por lá.</p>
         </div>
     </dialog>
@@ -91,9 +92,29 @@ document.body.insertAdjacentHTML('beforeend', `
         <div class="panel-body" id="saved-items"></div>
     </dialog>
 
+    <dialog class="panel panel-drawer" id="quick-panel" aria-labelledby="quick-title">
+        <div class="panel-header">
+            <h2 class="panel-title" id="quick-title">Compra rápida</h2>
+            <button type="button" class="panel-close" data-close>Fechar</button>
+        </div>
+        <div class="panel-body" id="quick-body"></div>
+    </dialog>
+
+    <dialog class="panel panel-photo" id="photo-panel" aria-label="Foto ampliada">
+        <div class="panel-header">
+            <span class="panel-title" id="photo-counter"></span>
+            <button type="button" class="panel-close" data-close>Fechar</button>
+        </div>
+        <div class="photo-view">
+            <button type="button" class="photos-arrow" id="photo-prev" aria-label="Foto anterior">←</button>
+            <img id="photo-image" alt="">
+            <button type="button" class="photos-arrow" id="photo-next" aria-label="Próxima foto">→</button>
+        </div>
+    </dialog>
+
     <dialog class="panel panel-menu" id="menu-panel" aria-label="Menu">
         <div class="panel-header">
-            <span class="logo">DK</span>
+            <span class="logo-mark" aria-hidden="true"></span>
             <button type="button" class="panel-close" data-close>Fechar</button>
         </div>
         <nav class="menu-links" aria-label="Menu">
@@ -183,10 +204,8 @@ const viraHTML = (product, options = {}) => {
 
     return `
         <div class="vira" data-vira data-other="${otherSide}" data-print="${printSide}">
-            <div class="vira-inner">
-                <img class="vira-face" src="${printImage.src}" alt="${printImage.alt}" ${loading}>
-                <img class="vira-face vira-face-back" src="${otherImage.src}" alt="" ${loading}>
-            </div>
+            <img class="vira-face" style="view-transition-name: tee-${product.slug}" src="${printImage.src}" alt="${printImage.alt}" ${loading}>
+            <img class="vira-face vira-face-back" src="${otherImage.src}" alt="" ${loading}>
             <a class="vira-hit" href="product.html?id=${product.id}" tabindex="-1" aria-hidden="true"></a>
             <button type="button" class="vira-btn" aria-label="${sideLabel(otherSide)} da ${product.name}">${sideLabel(otherSide)}</button>
         </div>
@@ -242,6 +261,7 @@ const productCardHTML = (product) => {
                     ${product.oldPrice ? `<s>${formatPrice(product.oldPrice)}</s>` : ''}
                     ${formatPrice(product.price)}
                 </p>
+                ${product.isSoldOut ? '' : `<button type="button" class="quick-btn" data-quick="${product.id}" aria-label="Comprar ${product.name}">Comprar</button>`}
             </div>
         </article>
     `;
@@ -288,7 +308,7 @@ const renderSaved = () => {
         container.innerHTML = `
             <div class="panel-empty">
                 <p>Nenhuma peça salva. Toque no coração de uma peça para guardar aqui.</p>
-                <a class="btn btn-ink" href="shop.html">Ver a coleção</a>
+                <a class="btn" href="shop.html">Ver a coleção</a>
             </div>
         `;
     } else {
@@ -362,7 +382,7 @@ const renderCart = () => {
         cartItemsEl.innerHTML = `
             <div class="panel-empty">
                 <p>Sua sacola está vazia. Cada processo começa com uma peça.</p>
-                <a class="btn btn-ink" href="shop.html">Ver a coleção</a>
+                <a class="btn" href="shop.html">Ver a coleção</a>
             </div>
         `;
         cartItemsEl.querySelector('a').addEventListener('click', () => cartPanel.close());
@@ -393,6 +413,25 @@ const renderCart = () => {
 
     const total = getCartTotal(lines);
     const missing = FREE_SHIPPING_MIN - total;
+
+    const inCart = lines.map(line => line.id);
+    const suggestions = missing > 0
+        ? PRODUCTS.filter(p => !inCart.includes(p.id) && !p.isSoldOut && p.price >= missing).slice(0, 2)
+        : [];
+    if (suggestions.length > 0) {
+        cartItemsEl.insertAdjacentHTML('beforeend', `
+            <div class="cart-suggest">
+                <p class="label">Mais uma e o frete sai grátis</p>
+                ${suggestions.map(p => `
+                    <button type="button" class="suggest-item" data-quick="${p.id}" aria-label="Comprar ${p.name}">
+                        <img src="${p.images[p.printSide].src}" alt="">
+                        <span><strong>${p.name}</strong>${formatPrice(p.price)}</span>
+                        <span class="suggest-add" aria-hidden="true">+</span>
+                    </button>
+                `).join('')}
+            </div>
+        `);
+    }
     $('#cart-subtotal').textContent = formatPrice(total);
     $('#shipping-note').textContent = missing > 0
         ? `Faltam ${formatPrice(missing)} para o frete grátis`
@@ -443,6 +482,67 @@ const addToCart = (product, color, size, quantity = 1) => {
 
 const cartToggle = $('#cart-toggle');
 if (cartToggle) cartToggle.addEventListener('click', openCart);
+
+// =========================================
+// COMPRA RÁPIDA
+// =========================================
+const quickPanel = $('#quick-panel');
+const quickBody = $('#quick-body');
+
+const openQuickBuy = (productId) => {
+    const product = findProduct(productId);
+    if (!product) return;
+    const image = product.images[product.printSide];
+
+    quickBody.innerHTML = `
+        <div class="quick-head">
+            <img src="${image.src}" alt="${image.alt}">
+            <div>
+                <h3 class="quick-name">${product.name}</h3>
+                <p class="script quick-tagline">${product.tagline}</p>
+                <p class="quick-price">${formatPrice(product.price)}</p>
+                <p class="quick-installments">ou ${MAX_INSTALLMENTS}x de ${formatPrice(product.price / MAX_INSTALLMENTS)} sem juros</p>
+            </div>
+        </div>
+        <fieldset class="selector-group">
+            <legend class="selector-label">Tamanho</legend>
+            <div class="size-options">
+                ${product.sizes.map(size => {
+                    const out = product.sizesOutOfStock.includes(size);
+                    return `<button type="button" class="size-btn" data-quick-size="${size}" aria-pressed="false" ${out ? `disabled aria-label="${size}, esgotado"` : ''}>${size}</button>`;
+                }).join('')}
+            </div>
+        </fieldset>
+        <button type="button" class="btn btn-primary btn-block" id="quick-add" disabled>Escolha um tamanho</button>
+        <a class="quick-more" href="product.html?id=${product.id}">Ver detalhes e girar em 3D <span aria-hidden="true">→</span></a>
+    `;
+
+    let size = null;
+    const addButton = $('#quick-add');
+    quickBody.querySelectorAll('[data-quick-size]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            size = btn.dataset.quickSize;
+            quickBody.querySelectorAll('[data-quick-size]').forEach(b => {
+                b.classList.toggle('active', b === btn);
+                b.setAttribute('aria-pressed', String(b === btn));
+            });
+            addButton.disabled = false;
+            addButton.textContent = `Colocar ${size} na sacola`;
+        });
+    });
+    addButton.addEventListener('click', () => {
+        addToCart(product, product.colors[0].name, size);
+        openCart();
+    });
+    quickBody.querySelector('.quick-more').addEventListener('click', () => quickPanel.close());
+
+    openPanel(quickPanel);
+};
+
+document.addEventListener('click', (e) => {
+    const button = e.target.closest('[data-quick]');
+    if (button) openQuickBuy(button.dataset.quick);
+});
 
 // =========================================
 // BUSCA
@@ -503,27 +603,49 @@ $('#menu-saved').addEventListener('click', openSaved);
 const routeStages = $('#route-stages');
 if (routeStages) {
     routeStages.innerHTML = PRODUCTS.map((product, i) => {
-        const tone = product.colors[0].name === 'Preto' ? 'stage-dark' : 'stage-light';
+        const tone = product.colors[0].name === 'Preto' ? 'tone-dark' : 'tone-light';
+        const photo = product.images[product.printSide];
         return `
-            <article class="stage ${tone}">
-                <div class="stage-media">${viraHTML(product)}</div>
-                <div class="stage-copy">
-                    <p class="stage-step">Etapa ${i + 1} de ${PRODUCTS.length}</p>
-                    <h3 class="stage-verb">${product.step}</h3>
-                    <p class="script stage-tagline">${product.tagline}</p>
-                    <p class="stage-story">${product.story}</p>
-                    <div class="stage-buy">
-                        <div class="stage-price">
-                            <span>${product.name}</span>
-                            <strong>${formatPrice(product.price)}</strong>
-                        </div>
-                        <a class="btn ${tone === 'stage-dark' ? 'btn-light' : 'btn-ink'}" href="product.html?id=${product.id}">Ver a peça</a>
+            <article class="chapter ${tone}" id="etapa-${i + 1}">
+                <div class="chapter-pin">
+                    <img class="chapter-art" src="${product.ink}" alt="" loading="lazy">
+                    <div class="chapter-side chapter-side-left">
+                        <p class="label">Etapa ${i + 1} de ${PRODUCTS.length}</p>
+                        <p class="script chapter-tagline">${product.tagline}</p>
                     </div>
+                    <div class="chapter-side chapter-side-right">
+                        <p class="chapter-story">${product.story}</p>
+                        <a class="chip" href="product.html?id=${product.id}">
+                            <img src="${photo.src}" alt="${photo.alt}" loading="lazy">
+                            <span class="chip-text">
+                                <strong>${product.name}</strong>
+                                <span>${formatPrice(product.price)}</span>
+                                <span class="chip-cta">Ver a peça <span aria-hidden="true">→</span></span>
+                            </span>
+                        </a>
+                        <button type="button" class="btn btn-primary chapter-buy" data-quick="${product.id}" aria-label="Comprar ${product.name}">Comprar</button>
+                    </div>
+                    <h3 class="chapter-verb">${product.step}</h3>
                 </div>
             </article>
         `;
     }).join('');
 }
+
+const journeyNav = $('#journey-nav');
+if (journeyNav) {
+    journeyNav.innerHTML = `
+        <ol>
+            ${PRODUCTS.map((product, i) => `
+                <li><a href="#etapa-${i + 1}" data-step="${i}"><span class="journey-number">${i + 1}</span><span class="journey-name">${product.step}</span></a></li>
+            `).join('')}
+        </ol>
+        <a class="journey-skip" href="#colecao">Pular para a coleção <span aria-hidden="true">→</span></a>
+    `;
+}
+
+const railTrack = $('#rail-products');
+if (railTrack) railTrack.innerHTML = PRODUCTS.map(productCardHTML).join('');
 
 // =========================================
 // COLEÇÃO (shop.html)
@@ -555,7 +677,9 @@ if (shopGrid) {
         }
 
         shopResults.textContent = `${filtered.length} ${filtered.length === 1 ? 'peça' : 'peças'}`;
-        shopGrid.innerHTML = filtered.map(productCardHTML).join('');
+        shopGrid.innerHTML = filtered.length
+            ? filtered.map(productCardHTML).join('')
+            : '<p class="shop-empty">Nenhuma peça nesse filtro. Toque em "Todas" para ver a coleção inteira.</p>';
     };
 
     $$('.filter-btn').forEach(btn => {
@@ -591,7 +715,7 @@ if (productLayout) {
             <div class="panel-empty product-missing">
                 <h1>Peça não encontrada</h1>
                 <p>Esse link não leva a nenhuma peça da coleção atual.</p>
-                <a class="btn btn-ink" href="shop.html">Ver a coleção</a>
+                <a class="btn" href="shop.html">Ver a coleção</a>
             </div>
         `;
     } else {
@@ -605,6 +729,8 @@ if (productLayout) {
             product.images[`${product.printSide}Flat`],
             product.images[`${otherSide}Flat`]
         ];
+        // Fundo oposto à cor da peça: preta sobre claro, off white sobre escuro
+        document.documentElement.dataset.tone = colors0IsDark(product) ? 'light' : 'dark';
         const stepNumber = PRODUCTS.indexOf(product) + 1;
         const colors = product.colors;
         const isSaved = getWishlist().includes(product.id);
@@ -613,25 +739,21 @@ if (productLayout) {
         const sizeQuestion = `Olá, DREVIK! Quais são as medidas da ${product.name}? Quero escolher o tamanho certo.`;
 
         productLayout.innerHTML = `
-            <div class="gallery">
-                <div class="gallery-main" id="gallery-main" tabindex="0"
-                     aria-label="Galeria de ${product.name}. Use as setas esquerda e direita para trocar a imagem.">
-                    <img src="${gallery[0].src}" alt="${gallery[0].alt}" id="gallery-main-img">
-                    <button type="button" class="gallery-arrow gallery-arrow-prev" id="gallery-prev" aria-label="Imagem anterior">←</button>
-                    <button type="button" class="gallery-arrow gallery-arrow-next" id="gallery-next" aria-label="Próxima imagem">→</button>
+            <div class="tee-column">
+                <div class="tee-stage" id="tee-stage" tabindex="0"
+                     aria-label="${product.name} em 3D. Arraste ou use as setas esquerda e direita para girar.">
+                    <img class="tee-fallback" style="view-transition-name: tee-${product.slug}" src="${product.images[product.printSide].src}" alt="${product.images[product.printSide].alt}">
+                    <p class="tee-hint" aria-hidden="true">Arraste para girar</p>
                 </div>
-                <div class="thumbnails" id="thumbnails">
-                    ${gallery.map((img, i) => `
-                        <button type="button" class="thumb ${i === 0 ? 'active' : ''}" data-index="${i}"
-                                aria-label="Ver imagem ${i + 1}: ${img.alt}" aria-pressed="${i === 0}">
-                            <img src="${img.src}" alt="" loading="lazy">
-                        </button>
-                    `).join('')}
+                <div class="tee-controls" role="group" aria-label="Lado da camiseta">
+                    <button type="button" class="tee-side" data-tee-side="frente" aria-pressed="false">Frente</button>
+                    <button type="button" class="tee-side" data-tee-side="costas" aria-pressed="false">Costas</button>
+                    <button type="button" class="tee-side" id="tee-zoom" aria-pressed="false">Aproximar</button>
                 </div>
             </div>
 
             <div class="product-details">
-                <p class="stage-step">Etapa ${stepNumber} de ${PRODUCTS.length} · ${product.step}</p>
+                <p class="label">Etapa ${stepNumber} de ${PRODUCTS.length} · ${product.step}</p>
                 <h1 class="product-name">${product.name}</h1>
                 <p class="script product-tagline">${product.tagline}</p>
 
@@ -670,19 +792,23 @@ if (productLayout) {
                         }).join('')}
                     </div>
                     <p class="size-error" id="size-error" role="alert"></p>
+                    ${product.sizesOutOfStock.length ? `<p class="size-note">${product.sizesOutOfStock.join(', ')} esgotado. <a href="${whatsappUrl(`Olá, DREVIK! Quero saber quando a ${product.name} volta no tamanho ${product.sizesOutOfStock.join(', ')}.`)}" target="_blank" rel="noopener">Avisar quando voltar</a></p>` : ''}
                 </fieldset>
 
                 <div class="product-actions" id="product-actions">
-                    <button type="button" class="btn btn-light btn-block" id="btn-buy-now" ${product.isSoldOut ? 'disabled' : ''}>${product.isSoldOut ? 'Esgotado' : 'Pedir no WhatsApp'}</button>
+                    <button type="button" class="btn btn-primary btn-block" id="btn-buy-now" ${product.isSoldOut ? 'disabled' : ''}>${product.isSoldOut ? 'Esgotado' : 'Pedir no WhatsApp'}</button>
                     <div class="product-actions-row">
-                        <button type="button" class="btn btn-ink btn-block" id="btn-add-cart" ${product.isSoldOut ? 'disabled' : ''}>Colocar na sacola</button>
+                        <button type="button" class="btn btn-block" id="btn-add-cart" ${product.isSoldOut ? 'disabled' : ''}>Colocar na sacola</button>
                         <button type="button" class="save-btn save-btn-inline ${isSaved ? 'active' : ''}" data-save="${product.id}"
                                 aria-pressed="${isSaved}" aria-label="Salvar ${product.name}">${HEART_ICON}</button>
                     </div>
-                    ${pairForFreeShipping ? '<p class="product-hint">Levando duas peças, o frete sai grátis.</p>' : ''}
+                    <ul class="product-hints">
+                        <li>O pedido abre uma mensagem pronta. Pagamento e frete são combinados por lá.</li>
+                        ${pairForFreeShipping ? '<li>Levando duas peças, o frete sai grátis.</li>' : ''}
+                    </ul>
                 </div>
 
-                <details class="product-desc" open>
+                <details class="product-desc" ${window.innerWidth > 1024 ? 'open' : ''}>
                     <summary>A história da estampa</summary>
                     ${product.description.map(paragraph => `<p>${paragraph}</p>`).join('')}
                 </details>
@@ -693,56 +819,7 @@ if (productLayout) {
             </div>
         `;
 
-        // === Galeria ===
-        const mainImg = $('#gallery-main-img');
-        const thumbs = $$('.thumb');
-        const galleryEl = $('#gallery-main');
-        let activeImageIndex = 0;
-
-        const setActiveImage = (index) => {
-            activeImageIndex = (index + gallery.length) % gallery.length;
-            const image = gallery[activeImageIndex];
-
-            mainImg.src = image.src;
-            mainImg.alt = image.alt;
-            thumbs.forEach((thumb, thumbIndex) => {
-                const isActive = thumbIndex === activeImageIndex;
-                thumb.classList.toggle('active', isActive);
-                thumb.setAttribute('aria-pressed', String(isActive));
-            });
-        };
-
-        thumbs.forEach(thumb => {
-            thumb.addEventListener('click', () => setActiveImage(Number(thumb.dataset.index)));
-        });
-
-        $('#gallery-prev').addEventListener('click', () => setActiveImage(activeImageIndex - 1));
-        $('#gallery-next').addEventListener('click', () => setActiveImage(activeImageIndex + 1));
-
-        galleryEl.addEventListener('keydown', (event) => {
-            if (event.key === 'ArrowLeft') {
-                event.preventDefault();
-                setActiveImage(activeImageIndex - 1);
-            } else if (event.key === 'ArrowRight') {
-                event.preventDefault();
-                setActiveImage(activeImageIndex + 1);
-            }
-        });
-
-        let pointerStartX = null;
-        galleryEl.addEventListener('pointerdown', (event) => {
-            if (event.pointerType === 'touch') pointerStartX = event.clientX;
-        });
-        galleryEl.addEventListener('pointerup', (event) => {
-            if (pointerStartX === null) return;
-            const swipeDistance = event.clientX - pointerStartX;
-            pointerStartX = null;
-            if (Math.abs(swipeDistance) < 40) return;
-            setActiveImage(activeImageIndex + (swipeDistance < 0 ? 1 : -1));
-        });
-        galleryEl.addEventListener('pointercancel', () => {
-            pointerStartX = null;
-        });
+        window.DREVIK_PRODUCT = product;
 
         // === Seletores ===
         let selectedColor = colors[0].name;
@@ -773,6 +850,10 @@ if (productLayout) {
                 sizeGroup.classList.remove('has-error');
                 sizeError.textContent = '';
                 buyBarBtn.textContent = `Colocar ${selectedSize} na sacola`;
+                if (!product.isSoldOut) {
+                    $('#btn-buy-now').textContent = `Pedir ${selectedSize} no WhatsApp`;
+                    $('#btn-add-cart').textContent = `Colocar ${selectedSize} na sacola`;
+                }
             });
         });
 
@@ -817,6 +898,42 @@ if (productLayout) {
 
         // === Segue o percurso: próximas etapas, em ordem ===
         const relatedSection = $('#related-section');
+        $('#photo-strip').innerHTML = gallery.map((image, i) => `
+            <figure class="embla-slide">
+                <button type="button" class="photo-open" data-photo="${i}" aria-label="Ampliar: ${image.alt}">
+                    <img src="${image.src}" alt="" loading="lazy" draggable="false">
+                </button>
+            </figure>
+        `).join('');
+
+        const photoPanel = $('#photo-panel');
+        const photoImage = $('#photo-image');
+        let photoIndex = 0;
+        const showPhoto = (index) => {
+            photoIndex = (index + gallery.length) % gallery.length;
+            photoImage.src = gallery[photoIndex].src;
+            photoImage.alt = gallery[photoIndex].alt;
+            $('#photo-counter').textContent = `Foto ${photoIndex + 1} de ${gallery.length}`;
+        };
+
+        // Arrastar a faixa não pode abrir a foto
+        let pressX = 0;
+        $('#photo-strip').addEventListener('pointerdown', (event) => {
+            pressX = event.clientX;
+        });
+        $('#photo-strip').addEventListener('click', (event) => {
+            const button = event.target.closest('[data-photo]');
+            if (!button || Math.abs(event.clientX - pressX) > 6) return;
+            showPhoto(Number(button.dataset.photo));
+            openPanel(photoPanel);
+        });
+        $('#photo-prev').addEventListener('click', () => showPhoto(photoIndex - 1));
+        $('#photo-next').addEventListener('click', () => showPhoto(photoIndex + 1));
+        photoPanel.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowLeft') showPhoto(photoIndex - 1);
+            if (event.key === 'ArrowRight') showPhoto(photoIndex + 1);
+        });
+
         const position = PRODUCTS.indexOf(product);
         const related = [...PRODUCTS.slice(position + 1), ...PRODUCTS.slice(0, position)];
 
