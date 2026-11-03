@@ -6,6 +6,9 @@
 const PRODUCTS = [
     {
         id: 'phase-one-tee',
+        slug: 'phase-one',
+        tee: { frente: 'img/tee/phase-one-frente.webp', costas: 'img/tee/phase-one-costas.webp' },
+        ink: 'img/ink/phase-one.webp',
         name: 'Phase One Tee',
         price: 159.90,
         category: 'oversized',
@@ -34,6 +37,9 @@ const PRODUCTS = [
     },
     {
         id: 'the-process-tee',
+        slug: 'the-process',
+        tee: { frente: 'img/tee/the-process-frente.webp', costas: 'img/tee/the-process-costas.webp' },
+        ink: 'img/ink/the-process.webp',
         name: 'The Process Tee',
         price: 149.90,
         oldPrice: 189.90,
@@ -62,6 +68,9 @@ const PRODUCTS = [
     },
     {
         id: 'every-scar-tee',
+        slug: 'every-scar',
+        tee: { frente: 'img/tee/every-scar-frente.webp', costas: 'img/tee/every-scar-costas.webp' },
+        ink: 'img/ink/every-scar.webp',
         name: 'Every Scar Tee',
         price: 149.90,
         category: 'regular',
@@ -90,6 +99,9 @@ const PRODUCTS = [
     },
     {
         id: 'stay-hard-tee',
+        slug: 'stay-hard',
+        tee: { frente: 'img/tee/stay-hard-frente.webp', costas: 'img/tee/stay-hard-costas.webp' },
+        ink: 'img/ink/stay-hard.webp',
         name: 'Stay Hard Tee',
         price: 149.90,
         category: 'regular',
