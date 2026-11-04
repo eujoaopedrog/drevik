@@ -68,7 +68,7 @@ const VERTEX = /* glsl */ `
         pos = mix(aDust, pos, intro);
 
         // Respiração mínima para a estampa não parecer uma imagem parada
-        pos.xy += vec2(sin(uTime * 0.6 + aRand.y * 20.0), cos(uTime * 0.5 + aRand.z * 20.0)) * 0.0035;
+        pos.xy += vec2(sin(uTime * 0.6 + aRand.y * 20.0), cos(uTime * 0.5 + aRand.z * 20.0)) * 0.0007;
 
         // O ponteiro afasta os grãos, como um dedo passando em tinta fresca
         vec2 away = pos.xy - uPointer.xy;
@@ -79,10 +79,10 @@ const VERTEX = /* glsl */ `
 
         vec4 mv = modelViewMatrix * vec4(pos, 1.0);
         gl_Position = projectionMatrix * mv;
-        gl_PointSize = uSize * (0.55 + aRand.w * 0.85) * (6.0 / -mv.z);
+        gl_PointSize = uSize * (0.9 + aRand.w * 0.25) * (6.0 / -mv.z);
 
         vColor = mix(uInk, aGold, uGoldMix * step(0.001, length(aGold)));
-        vAlpha = uOpacity * (0.62 + aRand.y * 0.38);
+        vAlpha = uOpacity * (0.9 + aRand.y * 0.1);
     }
 `;
 
@@ -92,7 +92,7 @@ const FRAGMENT = /* glsl */ `
 
     void main() {
         float d = length(gl_PointCoord - 0.5);
-        float a = smoothstep(0.5, 0.32, d) * vAlpha;
+        float a = smoothstep(0.5, 0.4, d) * vAlpha;
         if (a < 0.01) discard;
         gl_FragColor = vec4(vColor, a);
         #include <colorspace_fragment>
@@ -200,7 +200,7 @@ export const createInkJourney = async (canvas, { count }) => {
         const width = window.innerWidth;
         const height = window.innerHeight;
         const isNarrow = width < 768;
-        const dpr = Math.min(window.devicePixelRatio || 1, isNarrow ? 1.5 : 1.75);
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
         renderer.setPixelRatio(dpr);
         renderer.setSize(width, height, false);
         camera.aspect = width / height;
@@ -214,7 +214,7 @@ export const createInkJourney = async (canvas, { count }) => {
         uniforms.uDkScale.value = Math.min(width * (isNarrow ? 0.84 : 0.5), height * 0.92) * unitsPerPx;
         uniforms.uDkY.value = (isNarrow ? height * 0.2 : height * 0.13) * unitsPerPx;
         // Mesmo volume de tinta por área, em qualquer tela
-        uniforms.uSize.value = (isNarrow ? 1.3 : 1.4) * dpr * sizeBoost;
+        uniforms.uSize.value = (isNarrow ? 1.05 : 1.15) * dpr * sizeBoost;
     };
 
     const onPointer = (event) => {
