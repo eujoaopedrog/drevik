@@ -1,6 +1,38 @@
 // =========================================
 // BANCO DE DADOS DE PRODUTOS - DREVIK
 // =========================================
+// Medidas em centímetros, por modelagem. Cada peça só mostra os tamanhos que vende.
+// Modelagem sem tabela aqui continua tirando a dúvida de tamanho pelo WhatsApp.
+const SIZE_GUIDE = {
+    oversized: {
+        // Na oversized a largura é medida perto da barra; na regular, logo abaixo das mangas
+        widthLineY: 256,
+        note: 'Medidas em centímetros. Podem variar em até 2 cm.',
+        sizes: {
+            P: { largura: 54, altura: 74, manga: 26 },
+            M: { largura: 58, altura: 76, manga: 27 },
+            G: { largura: 62, altura: 78, manga: 28 },
+            GG: { largura: 66, altura: 80, manga: 29 },
+            XG: { largura: 70, altura: 82, manga: 30 },
+            XGG: { largura: 74, altura: 84, manga: 31 }
+        }
+    },
+    regular: {
+        widthLineY: 135,
+        note: 'Medidas em centímetros.',
+        sizes: {
+            PP: { largura: 48, altura: 68, manga: 19 },
+            P: { largura: 52, altura: 70, manga: 20 },
+            M: { largura: 54, altura: 73, manga: 21 },
+            G: { largura: 56, altura: 76, manga: 22 },
+            GG: { largura: 58, altura: 78, manga: 23 },
+            // Na tabela original este tamanho se chama XGG; na loja, XG
+            XG: { largura: 62, altura: 81, manga: 24 },
+            '2XGG': { largura: 67, altura: 84, manga: 26 }
+        }
+    }
+};
+
 // A ordem do array é a ordem do percurso da coleção (etapa 1 a 4).
 // printSide indica o lado da camiseta onde está a estampa principal.
 const PRODUCTS = [

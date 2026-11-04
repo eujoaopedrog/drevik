@@ -1253,8 +1253,134 @@ main,
 }
 
 .size-help {
+    min-height: 44px;
     font-size: 0.9rem;
+    text-decoration: underline;
     text-underline-offset: 3px;
+}
+
+/* Guia de medidas */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.size-diagram {
+    display: block;
+    width: min(100%, 320px);
+    margin: 0 auto 1.5rem;
+}
+
+.size-diagram-tee,
+.size-diagram-seam {
+    fill: none;
+    stroke: var(--fg);
+    stroke-linejoin: round;
+    stroke-width: 1.25;
+}
+
+.size-diagram-seam {
+    stroke-width: 0.75;
+}
+
+.size-diagram-measure line {
+    stroke: var(--luz);
+    stroke-width: 1.25;
+}
+
+.size-diagram-tip {
+    fill: var(--luz);
+}
+
+.size-diagram-label text {
+    fill: var(--luz);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.size-table-wrap {
+    overflow-x: auto;
+}
+
+.size-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+}
+
+.size-table th,
+.size-table td {
+    height: 44px;
+    padding: 0 0.35rem;
+    border: solid var(--fg);
+    border-width: 0 1px 1px 0;
+    font-weight: 400;
+}
+
+.size-table thead th {
+    border-top-width: 1px;
+}
+
+.size-table tbody th {
+    border-left-width: 1px;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.size-table .is-out {
+    color: color-mix(in srgb, var(--fg) 50%, var(--bg));
+}
+
+.size-table thead .is-out {
+    text-decoration: line-through;
+}
+
+.size-table .is-selected {
+    background: var(--fg);
+    color: var(--bg);
+}
+
+.size-table-note {
+    margin-top: 0.6rem;
+    font-size: 0.9rem;
+}
+
+.size-guide-tip {
+    margin-top: 1.25rem;
+}
+
+.size-guide-ask {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin: 0.5rem 0 1.5rem;
+    text-underline-offset: 3px;
+}
+
+.quick-sizes summary {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 0.9rem;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+}
+
+.quick-sizes .size-table-wrap {
+    margin-top: 0.25rem;
 }
 
 .size-options {
