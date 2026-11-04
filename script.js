@@ -100,6 +100,14 @@ document.body.insertAdjacentHTML('beforeend', `
         <div class="panel-body" id="quick-body"></div>
     </dialog>
 
+    <dialog class="panel panel-drawer" id="size-panel" aria-labelledby="size-title">
+        <div class="panel-header">
+            <h2 class="panel-title" id="size-title">Guia de medidas</h2>
+            <button type="button" class="panel-close" data-close>Fechar</button>
+        </div>
+        <div class="panel-body" id="size-body"></div>
+    </dialog>
+
     <dialog class="panel panel-photo" id="photo-panel" aria-label="Foto ampliada">
         <div class="panel-header">
             <span class="panel-title" id="photo-counter"></span>
@@ -484,6 +492,70 @@ const cartToggle = $('#cart-toggle');
 if (cartToggle) cartToggle.addEventListener('click', openCart);
 
 // =========================================
+// GUIA DE MEDIDAS
+// =========================================
+const SIZE_MEASURES = [['largura', 'Largura'], ['altura', 'Altura'], ['manga', 'Manga']];
+
+const sizeTableHTML = (product) => {
+    const guide = SIZE_GUIDE[product.category];
+    const sizes = product.sizes;
+    // Tamanho à venda sem medida na tabela aparece vazio, em vez de sumir
+    const missing = sizes.filter(size => !guide.sizes[size]);
+    const outClass = (size) => product.sizesOutOfStock.includes(size) ? ' is-out' : '';
+    return `
+        <div class="size-table-wrap">
+            <table class="size-table">
+                <caption class="sr-only">Medidas da ${product.name} por tamanho, em centímetros</caption>
+                <thead>
+                    <tr>
+                        <td></td>
+                        ${sizes.map(size => `<th scope="col" class="${outClass(size)}" data-guide-size="${size}">${size}${product.sizesOutOfStock.includes(size) ? '<span class="sr-only"> (esgotado)</span>' : ''}</th>`).join('')}
+                    </tr>
+                </thead>
+                <tbody>
+                    ${SIZE_MEASURES.map(([key, label]) => `
+                        <tr>
+                            <th scope="row">${label}</th>
+                            ${sizes.map(size => `<td class="${outClass(size)}" data-guide-size="${size}">${guide.sizes[size] ? guide.sizes[size][key] : '–'}</td>`).join('')}
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+        <p class="size-table-note">${guide.note}${missing.length ? ` Medidas do ${missing.join(', ')} sob consulta.` : ''}</p>
+    `;
+};
+
+// Destaca na tabela o tamanho escolhido
+const markGuideSize = (root, size) => {
+    root.querySelectorAll('[data-guide-size]').forEach(cell => {
+        cell.classList.toggle('is-selected', cell.dataset.guideSize === size);
+    });
+};
+
+const sizeDiagramHTML = (widthY) => `
+    <svg class="size-diagram" viewBox="0 0 350 300" role="img" aria-label="Camiseta com as três medidas: largura de um lado ao outro do corpo, altura do ombro até a barra e manga do ombro até o punho.">
+        <defs>
+            <marker id="size-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path class="size-diagram-tip" d="M0 0 8 4 0 8z"></path>
+            </marker>
+        </defs>
+        <path class="size-diagram-tee" d="M130 30Q160 50 190 30L240 44 300 120 262 148 232 110V275H88V110L58 148 20 120 80 44Z"></path>
+        <path class="size-diagram-seam" d="M130 30Q160 18 190 30M240 44 232 110M80 44 88 110"></path>
+        <g class="size-diagram-measure">
+            <line x1="92" y1="${widthY}" x2="228" y2="${widthY}" marker-start="url(#size-arrow)" marker-end="url(#size-arrow)"></line>
+            <line x1="190" y1="34" x2="190" y2="271" marker-start="url(#size-arrow)" marker-end="url(#size-arrow)"></line>
+            <line x1="252" y1="36" x2="312" y2="112" marker-start="url(#size-arrow)" marker-end="url(#size-arrow)"></line>
+        </g>
+        <g class="size-diagram-label">
+            <text x="140" y="${widthY - 9}" text-anchor="middle">Largura</text>
+            <text transform="translate(181 200) rotate(-90)" text-anchor="middle">Altura</text>
+            <text transform="translate(293 64) rotate(52)" text-anchor="middle">Manga</text>
+        </g>
+    </svg>
+`;
+
+// =========================================
 // COMPRA RÁPIDA
 // =========================================
 const quickPanel = $('#quick-panel');
@@ -513,6 +585,12 @@ const openQuickBuy = (productId) => {
                 }).join('')}
             </div>
         </fieldset>
+        ${SIZE_GUIDE[product.category] ? `
+            <details class="quick-sizes">
+                <summary>Ver medidas</summary>
+                ${sizeTableHTML(product)}
+            </details>
+        ` : ''}
         <button type="button" class="btn btn-primary btn-block" id="quick-add" disabled>Escolha um tamanho</button>
         <a class="quick-more" href="product.html?id=${product.id}">Ver detalhes e girar em 3D <span aria-hidden="true">→</span></a>
     `;
@@ -526,6 +604,7 @@ const openQuickBuy = (productId) => {
                 b.classList.toggle('active', b === btn);
                 b.setAttribute('aria-pressed', String(b === btn));
             });
+            markGuideSize(quickBody, size);
             addButton.disabled = false;
             addButton.textContent = `Colocar ${size} na sacola`;
         });
@@ -736,7 +815,10 @@ if (productLayout) {
         const isSaved = getWishlist().includes(product.id);
         const installment = formatPrice(product.price / MAX_INSTALLMENTS);
         const pairForFreeShipping = product.price * 2 >= FREE_SHIPPING_MIN;
-        const sizeQuestion = `Olá, DREVIK! Quais são as medidas da ${product.name}? Quero escolher o tamanho certo.`;
+        const hasSizeGuide = Boolean(SIZE_GUIDE[product.category]);
+        const sizeQuestion = hasSizeGuide
+            ? `Olá, DREVIK! Estou em dúvida sobre o tamanho da ${product.name}. Pode me ajudar?`
+            : `Olá, DREVIK! Quais são as medidas da ${product.name}? Quero escolher o tamanho certo.`;
 
         productLayout.innerHTML = `
             <div class="tee-column">
@@ -783,7 +865,9 @@ if (productLayout) {
                 <fieldset class="selector-group" id="size-group">
                     <div class="size-header">
                         <legend class="selector-label">Tamanho</legend>
-                        <a class="size-help" href="${whatsappUrl(sizeQuestion)}" target="_blank" rel="noopener">Dúvida na medida? Pergunte</a>
+                        ${hasSizeGuide
+                            ? '<button type="button" class="size-help" id="size-guide-open">Ver medidas</button>'
+                            : `<a class="size-help" href="${whatsappUrl(sizeQuestion)}" target="_blank" rel="noopener">Dúvida na medida? Pergunte</a>`}
                     </div>
                     <div class="size-options" id="size-options">
                         ${product.sizes.map(size => {
@@ -821,6 +905,18 @@ if (productLayout) {
 
         window.DREVIK_PRODUCT = product;
 
+        // === Guia de medidas ===
+        const sizeBody = $('#size-body');
+        if (hasSizeGuide) {
+            sizeBody.innerHTML = `
+                ${sizeDiagramHTML(SIZE_GUIDE[product.category].widthLineY)}
+                ${sizeTableHTML(product)}
+                <p class="size-guide-tip">Na dúvida, estenda uma camiseta sua em uma superfície plana, meça e compare com a tabela.</p>
+                <a class="size-guide-ask" href="${whatsappUrl(sizeQuestion)}" target="_blank" rel="noopener">Ainda em dúvida? Pergunte no WhatsApp</a>
+            `;
+            $('#size-guide-open').addEventListener('click', () => openPanel($('#size-panel')));
+        }
+
         // === Seletores ===
         let selectedColor = colors[0].name;
         let selectedSize = null;
@@ -847,6 +943,7 @@ if (productLayout) {
                     b.setAttribute('aria-pressed', String(b === btn));
                 });
                 selectedSize = btn.dataset.size;
+                markGuideSize(sizeBody, selectedSize);
                 sizeGroup.classList.remove('has-error');
                 sizeError.textContent = '';
                 buyBarBtn.textContent = `Colocar ${selectedSize} na sacola`;
