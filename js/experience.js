@@ -113,7 +113,7 @@ const startJourney = async () => {
     const { createInkJourney } = await import('./ink-journey.js');
     const coarse = (navigator.hardwareConcurrency || 4) <= 4;
     const lowMemory = (navigator.deviceMemory || 8) <= 2;
-    const count = isDesktop ? (coarse ? 90000 : 170000) : (lowMemory ? 32000 : 60000);
+    const count = isDesktop ? (coarse ? 140000 : 260000) : (lowMemory ? 45000 : 90000);
 
     let journey;
     try {
@@ -160,7 +160,7 @@ const startJourney = async () => {
             trigger: chapter,
             start: 'top top',
             end: 'bottom bottom',
-            onUpdate: (self) => journey.setDrift((self.progress - 0.5) * 0.34),
+            onUpdate: (self) => journey.setDrift((self.progress - 0.5) * 0.16),
             onLeave: () => journey.setDrift(0),
             onLeaveBack: () => journey.setDrift(0)
         });
